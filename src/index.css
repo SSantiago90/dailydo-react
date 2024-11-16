@@ -1,0 +1,49 @@
+@import url("https://fonts.googleapis.com/css2?family=Onest:wght@100..900&family=Reenie+Beanie&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: rgb(15, 23, 42);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+._text-default {
+  font-family: "Onest", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+._text-handwritten {
+  font-family: "Reenie Beanie", "Comic Sans MS", cursive !important;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #6c6c6c;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
