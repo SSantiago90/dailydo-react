@@ -1,7 +1,8 @@
 import InputTodo from "./InputTodo";
 import HBar from "./UI/HBar";
-import { memo, useContext, useEffect } from "react";
+import { memo, useContext } from "react";
 import { todosContext } from "../storage/TodosContext";
+import InputPlaceholder from "./InputPlaceholder";
 
 type DayViewProps = {
   date: Date;
@@ -11,15 +12,17 @@ function DayView({ date }: DayViewProps) {
   const day = date.getDate() + "." + date.getMonth();
   const dayName = date.toLocaleString("en-US", { weekday: "short" });
 
-  const { getTodosForDay, handleChange, handleDone } = useContext(todosContext);
+  const { getTodosForDay, handleChange, handleDone, handleNewTodo } =
+    useContext(todosContext);
   const todos = getTodosForDay(date);
   return (
-    <div style={{ maxWidth: "400px" }} className="flex flex-col  rounded py-5">
-      <div className="flex flex-row gap-2 justify-normal">
-        <h3 className="text-4xl mb-1 font-bold text-rose-200 text-right pr-2 _text-handwritten">
+    <div style={{ maxWidth: "400px" }} className="flex flex-col rounded py-5">
+      <div className="flex flex-row gap-2 justify-between relative">
+        <span></span>
+        <h3 className="text-4xl z-10 mb-1 font-bold text-rose-200 opacity-100 text-right pr-1 _text-handwritten drop-shadow-[-3px_3px_3px_rgba(15,23,42,1)]">
           {day}
         </h3>
-        <h3 className="text-4xl mb-1 font-bold text-rose-500 opacity-70 text-left pl-1 _text-handwritten">
+        <h3 className="lg:text-6xl z-0 md:text-4xl text-2xl font-bold text-rose-500 opacity-70 text-left pl-1 _text-handwritten absolute bottom-0">
           {dayName}
         </h3>
       </div>
@@ -36,18 +39,15 @@ function DayView({ date }: DayViewProps) {
               done={todo.done}
             />
           ))}
-          {/*   <InputPlaceholder
+
+          <InputPlaceholder
             index={todos.length}
-            onChange={(text) => handleNewTodo(text, date)}
-          /> */}
+            onChange={(value) => handleNewTodo(value, date)}
+          />
         </ul>
       </div>
     </div>
   );
 }
 
-export default memo(
-  DayView,
-  (prevProps, nextProps) =>
-    JSON.stringify(prevProps.todos) === JSON.stringify(nextProps.todos)
-);
+export default DayView;

@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { CircleCheck } from "lucide-react";
-import { memo, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 type InputTodoProps = {
   value: string;
@@ -17,7 +17,6 @@ export default function InputTodo({
   done = false,
 }: InputTodoProps) {
   const [valueInput, setValue] = useState<string>(value);
-  const inputRef = useRef<HTMLInputElement>(null);
   const [focus, setFocus] = useState<boolean>(false);
 
   const classesInput = classNames(
@@ -43,6 +42,7 @@ export default function InputTodo({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
+      setFocus(true);
       setValue(e.target.value);
       onChange(e.target.value);
     }
@@ -52,7 +52,6 @@ export default function InputTodo({
     <>
       <li className="flex-1 w-full flex items-center">
         <input
-          ref={inputRef}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
           onChange={handleChange}
