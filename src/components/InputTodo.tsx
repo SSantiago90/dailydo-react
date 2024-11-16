@@ -1,25 +1,24 @@
 import classNames from "classnames";
 import { CircleCheck } from "lucide-react";
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 
 type InputTodoProps = {
   value: string;
   done?: boolean;
   placeholder?: boolean;
-  focus: boolean;
   onClick?: () => void;
   onChange?: (text: string) => void;
 };
 
-function InputTodo({
+export default function InputTodo({
   onChange,
   onClick,
   value,
   done = false,
-  focus = false,
 }: InputTodoProps) {
   const [valueInput, setValue] = useState<string>(value);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [focus, setFocus] = useState<boolean>(false);
 
   const classesInput = classNames(
     { "line-through": done },
@@ -34,10 +33,13 @@ function InputTodo({
     "text-slate-600 hover:text-slate-700 cursor-pointer mr-2"
   );
 
-  const classesHr = classNames("border-t-2 mb-1 mx-2", {
-    "border-slate-600 border-opacity-30": !focus,
-    "border-rose-500 border-opacity-40": focus,
-  });
+  const classesHr = classNames(
+    "border-t-1 mb-1 mx-2 transition transform duration-200 ease-in-out ",
+    {
+      "border-slate-600 border-opacity-30": !focus,
+      "border-rose-500 border-opacity-70": focus,
+    }
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
@@ -46,15 +48,13 @@ function InputTodo({
     }
   };
 
-  useEffect(() => {
-    if (focus) inputRef.current?.focus();
-  }, [focus]);
-
   return (
     <>
       <li className="flex-1 w-full flex items-center">
         <input
           ref={inputRef}
+          onFocus={() => setFocus(true)}
+          onBlur={() => setFocus(false)}
           onChange={handleChange}
           className={classesInput}
           type="text"
@@ -75,4 +75,11 @@ function InputTodo({
   );
 }
 
-export default InputTodo;
+/* export default memo(InputTodo, (prevProps, nextProps) => {
+  return (
+    prevProps.value === nextProps.value &&
+    prevProps.done === nextProps.done &&
+    prevProps.placeholder === nextProps.placeholder
+  );
+});
+ */

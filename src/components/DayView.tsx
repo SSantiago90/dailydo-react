@@ -1,31 +1,18 @@
 import InputTodo from "./InputTodo";
-import { TodosType } from "../types/Todos.types";
 import HBar from "./UI/HBar";
-import InputPlaceholder from "./InputPlaceholder";
-import { useEffect } from "react";
+import { memo, useContext, useEffect } from "react";
+import { todosContext } from "../storage/TodosContext";
 
 type DayViewProps = {
-  handleDone: (id: string) => void;
-  handleChange: (id: string, text: string) => void;
-  handleNewTodo: (text: string, date: Date) => void;
   date: Date;
-  todos: TodosType[];
 };
 
-export default function DayView({
-  handleChange,
-  handleDone,
-  handleNewTodo,
-  date,
-  todos,
-}: DayViewProps) {
+function DayView({ date }: DayViewProps) {
   const day = date.getDate() + "." + date.getMonth();
   const dayName = date.toLocaleString("en-US", { weekday: "short" });
 
-  useEffect(() => {
-    // give focus to LAST modified todo
-  }, [todos]);
-
+  const { getTodosForDay, handleChange, handleDone } = useContext(todosContext);
+  const todos = getTodosForDay(date);
   return (
     <div style={{ maxWidth: "400px" }} className="flex flex-col  rounded py-5">
       <div className="flex flex-row gap-2 justify-normal">
@@ -58,3 +45,9 @@ export default function DayView({
     </div>
   );
 }
+
+export default memo(
+  DayView,
+  (prevProps, nextProps) =>
+    JSON.stringify(prevProps.todos) === JSON.stringify(nextProps.todos)
+);

@@ -1,6 +1,7 @@
 import getWeekdays from "../util/createWeekdays";
 
 const days = getWeekdays();
+import { TodosType } from "../types/Todos.types.ts";
 
 const mockdata = [
   { date: days[0], id: crypto.randomUUID().slice(0,7), task: "Hola", done: false },
@@ -13,15 +14,15 @@ const mockdata = [
   { date: days[0], id: crypto.randomUUID().slice(0,7), task: "Bye", done: false },
   { date: days[6], id: crypto.randomUUID().slice(0,7), task: "Do", done: true },
   { date: days[4], id: crypto.randomUUID().slice(0,7), task: "Redo", done: false },
-]
+] as TodosType[];
 
 // Sync & Async helper functions
-const getData = () => mockdata;
+const getData = () => mockdata ;
 
-const getMockDataAsync = new Promise((resolve) => {
+const getMockDataAsync = new Promise((resolve): void => {
   setTimeout(() => {
     resolve(mockdata);
   }, 1000);
 });
 
-export {getData, getMockDataAsync};
+export { getData, getMockDataAsync };
