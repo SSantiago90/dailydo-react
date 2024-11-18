@@ -1,7 +1,13 @@
 import getWeekdays from "../util/createWeekdays";
-
-const days = getWeekdays();
 import { TodosType } from "../types/Todos.types.ts";
+
+const weekdays = getWeekdays();
+// expand days arrays adding 7 days forward and 7 days backwards
+// for each day -> create a new date -> it uses a new date for each of the 7 days, setting the date to the next/previous week
+const nextWeekDays = weekdays.map((day) => new Date(new Date(day).setDate(day.getDate() + 7)));
+const prevWeekDays = weekdays.map((day) => new Date(new Date(day).setDate(day.getDate() - 7)));
+
+const days = [...weekdays, ...nextWeekDays, ...prevWeekDays];
 
 const mockdata = [
   { date: days[0], id: crypto.randomUUID().slice(0,7), task: "Hola", done: false },
@@ -14,6 +20,16 @@ const mockdata = [
   { date: days[0], id: crypto.randomUUID().slice(0,7), task: "Bye", done: false },
   { date: days[6], id: crypto.randomUUID().slice(0,7), task: "Do", done: true },
   { date: days[4], id: crypto.randomUUID().slice(0,7), task: "Redo", done: false },
+  { date: days[1], id: crypto.randomUUID().slice(0,7), task: "Hello", done: false },
+  { date: days[2], id: crypto.randomUUID().slice(0,7), task: "World", done: false },
+  { date: days[4], id: crypto.randomUUID().slice(0,7), task: "Jest", done: true },
+  { date: days[5], id: crypto.randomUUID().slice(0,7), task: "TypeScript", done: false },
+  { date: days[7], id: crypto.randomUUID().slice(0,7), task: "React Native", done: false },
+  { date: days[8], id: crypto.randomUUID().slice(0,7), task: "Angular", done: true },
+  { date: days[9], id: crypto.randomUUID().slice(0,7), task: "Ember", done: false },
+  { date: days[10], id: crypto.randomUUID().slice(0,7), task: "Backbone", done: false },
+  { date: days[11], id: crypto.randomUUID().slice(0,7), task: "React Router", done: true },
+  { date: days[12], id: crypto.randomUUID().slice(0,7), task: "Redux", done: false },
 ] as TodosType[];
 
 // Sync & Async helper functions

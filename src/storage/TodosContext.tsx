@@ -1,14 +1,16 @@
 import { createContext, useState, ReactNode, useEffect } from "react";
 import { TodosType } from "../types/Todos.types";
-import { getTodosForDay, getTodosForWeek } from "../services/mockData";
+import { getTodosForWeek } from "../services/mockData";
 import getWeekdays from "../util/createWeekdays";
 
 type TodosContextType = {
   todos: TodosType[];
+  activeDate: Date;
   handleDone: (id: string) => void;
   handleChange: (id: string, text: string) => void;
   handleNewTodo: (date: Date) => void;
   getTodosForDay: (date: Date) => TodosType[];
+  setDateTo: (date: Date) => void;
 };
 
 export const todosContext = createContext<TodosContextType>(
@@ -17,10 +19,11 @@ export const todosContext = createContext<TodosContextType>(
 
 export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const [todos, setTodos] = useState<TodosType[]>([]);
+  const [activeDate, setActiveDate] = useState(new Date());
 
   // setup mockup data
   useEffect(() => {
-    const week = getWeekdays();
+    const week = getWeekdays(activeDate);
     const weeklyTodos = getTodosForWeek(week);
     week.forEach((day) => {
       // add an empty "todo" for everyday
@@ -32,7 +35,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       });
     });
     setTodos(weeklyTodos);
-  }, []);
+  }, [activeDate]);
 
   const handleDone = (todoId: string) => {
     const newTodos = todos.map((todo) => {
@@ -71,9 +74,21 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  const setDateTo = (date: Date) => {
+    setActiveDate(date);
+  };
+
   return (
     <todosContext.Provider
-      value={{ todos, handleDone, handleChange, handleNewTodo, getTodosForDay }}
+      value={{
+        todos,
+        handleDone,
+        handleChange,
+        handleNewTodo,
+        getTodosForDay,
+        activeDate,
+        setDateTo,
+      }}
     >
       {children}
     </todosContext.Provider>
