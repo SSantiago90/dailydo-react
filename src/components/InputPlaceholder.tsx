@@ -14,7 +14,7 @@ function InputPlaceholder({ onChange }: InputPlaceholderProps) {
   );
 
   const classesHr = classNames(
-    "border-t-1 mb-1 mx-2 transition transform duration-200 ease-in-out ",
+    "border-t-1 mb-1 mx-2 transition transform duration-1000 ease-in-out ",
     {
       "border-slate-600 border-opacity-30": !focus,
       "border-rose-500 border-opacity-70": focus,
@@ -35,7 +35,7 @@ function InputPlaceholder({ onChange }: InputPlaceholderProps) {
 
   return (
     <>
-      <li className="flex-1 w-full flex items-center">
+      <li className="flex-1 w-full flex items-center ">
         <input
           className={classesInput}
           placeholder="Add a new task..."

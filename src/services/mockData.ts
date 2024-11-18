@@ -17,7 +17,31 @@ const mockdata = [
 ] as TodosType[];
 
 // Sync & Async helper functions
-const getData = () => mockdata ;
+
+function getData(): TodosType[] {
+  return mockdata;
+}
+
+function getTodosForDay(date: Date): TodosType[] {
+  return mockdata.filter((todo) => todo.date.toLocaleDateString() == date.toLocaleDateString());
+}
+
+function getTodosForWeek(dates: Date[]): TodosType[] {
+  const result = [] as TodosType[];
+  const stringDays = dates.map((day) => day.toLocaleDateString());
+  mockdata.forEach((todo) => {
+    if (stringDays.includes(todo.date.toLocaleDateString())) {
+      result.push(todo);
+    }
+  });
+  return result;
+}
+
+function getSingleTodo(id: string) : TodosType  {
+  const todo = mockdata.find((todo) => todo.id === id);
+  if (!todo) throw new Error("Todo not found");
+  return todo;
+}
 
 const getMockDataAsync = new Promise((resolve): void => {
   setTimeout(() => {
@@ -25,4 +49,4 @@ const getMockDataAsync = new Promise((resolve): void => {
   }, 1000);
 });
 
-export { getData, getMockDataAsync };
+export { getData, getTodosForDay, getMockDataAsync, getTodosForWeek, getSingleTodo};

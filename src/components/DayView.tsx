@@ -1,6 +1,6 @@
 import InputTodo from "./InputTodo";
 import HBar from "./UI/HBar";
-import { memo, useContext } from "react";
+import { useContext } from "react";
 import { todosContext } from "../storage/TodosContext";
 import InputPlaceholder from "./InputPlaceholder";
 
@@ -22,7 +22,7 @@ function DayView({ date }: DayViewProps) {
         <h3 className="text-4xl z-10 mb-1 font-bold text-rose-200 opacity-100 text-right pr-1 _text-handwritten drop-shadow-[-3px_3px_3px_rgba(15,23,42,1)]">
           {day}
         </h3>
-        <h3 className="lg:text-6xl z-0 md:text-4xl text-2xl font-bold text-rose-500 opacity-70 text-left pl-1 _text-handwritten absolute bottom-0">
+        <h3 className="xl:text-6xl z-0 md:text-4xl text-2xl font-bold text-rose-500 opacity-70 text-left pl-1 _text-handwritten absolute bottom-0">
           {dayName}
         </h3>
       </div>
@@ -32,7 +32,14 @@ function DayView({ date }: DayViewProps) {
         <ul className="list-none flex flex-col">
           {todos.map((todo, index) => (
             <InputTodo
-              onChange={(text) => handleChange(todo.id, text)}
+              onChange={
+                index === todos.length - 1
+                  ? (text) => {
+                      handleChange(todo.id, text);
+                      return handleNewTodo(date);
+                    }
+                  : (text) => handleChange(todo.id, text)
+              }
               onClick={() => handleDone(todo.id)}
               key={index}
               value={todo.task}
@@ -40,10 +47,10 @@ function DayView({ date }: DayViewProps) {
             />
           ))}
 
-          <InputPlaceholder
+          {/*      <InputPlaceholder
             index={todos.length}
             onChange={(value) => handleNewTodo(value, date)}
-          />
+          /> */}
         </ul>
       </div>
     </div>

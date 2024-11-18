@@ -10,4 +10,4 @@ type TodosType = {
   done: boolean,
 };
 
-export { DaylistType, TodosType };
+export type { DaylistType, TodosType };

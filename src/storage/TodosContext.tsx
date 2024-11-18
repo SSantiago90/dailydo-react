@@ -1,12 +1,13 @@
 import { createContext, useState, ReactNode, useEffect } from "react";
 import { TodosType } from "../types/Todos.types";
-import { getData } from "../services/mockData";
+import { getTodosForDay, getTodosForWeek } from "../services/mockData";
+import getWeekdays from "../util/createWeekdays";
 
 type TodosContextType = {
   todos: TodosType[];
   handleDone: (id: string) => void;
   handleChange: (id: string, text: string) => void;
-  handleNewTodo: (text: string, date: Date) => void;
+  handleNewTodo: (date: Date) => void;
   getTodosForDay: (date: Date) => TodosType[];
 };
 
@@ -19,10 +20,19 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
 
   // setup mockup data
   useEffect(() => {
-    setTodos(getData());
+    const week = getWeekdays();
+    const weeklyTodos = getTodosForWeek(week);
+    week.forEach((day) => {
+      // add an empty "todo" for everyday
+      weeklyTodos.push({
+        date: day,
+        id: crypto.randomUUID(),
+        task: "",
+        done: false,
+      });
+    });
+    setTodos(weeklyTodos);
   }, []);
-
-  console.log("context", todos);
 
   const handleDone = (todoId: string) => {
     const newTodos = todos.map((todo) => {
@@ -45,11 +55,14 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     setTodos(newTodos);
   };
 
-  const handleNewTodo = (text: string, date: Date) => {
-    setTodos([
-      ...todos,
-      { id: crypto.randomUUID(), date, task: text, done: false },
-    ]);
+  const handleNewTodo = (date: Date) => {
+    const newTodo = {
+      id: crypto.randomUUID(),
+      date: date,
+      task: "",
+      done: false,
+    };
+    setTodos([...todos, newTodo]);
   };
 
   const getTodosForDay = (date: Date) => {

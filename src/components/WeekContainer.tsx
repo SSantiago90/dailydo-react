@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import getWeekdays from "../util/createWeekdays.js";
+import getWeekdays from "../util/createWeekdays";
 import DayView from "./DayView.js";
 
 function WeekContainer() {
