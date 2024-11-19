@@ -30,10 +30,14 @@ const mockdata = [
   { date: days[10], id: crypto.randomUUID().slice(0,7), task: "Backbone", done: false },
   { date: days[11], id: crypto.randomUUID().slice(0,7), task: "React Router", done: true },
   { date: days[12], id: crypto.randomUUID().slice(0,7), task: "Redux", done: false },
+  { date: days[13], id: crypto.randomUUID().slice(0,7), task: "Next.js", done: false },
+  { date: days[14], id: crypto.randomUUID().slice(0,7), task: "Svelte", done: true },
+  { date: days[16], id: crypto.randomUUID().slice(0,7), task: "Preact", done: false },
+  { date: days[16], id: crypto.randomUUID().slice(0,7), task: "Vue.js", done: false },
+
 ] as TodosType[];
 
 // Sync & Async helper functions
-
 function getData(): TodosType[] {
   return mockdata;
 }

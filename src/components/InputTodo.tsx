@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { CircleCheck } from "lucide-react";
-import { memo, useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import { useTheme } from "../storage/ThemeContext";
 
 type InputTodoProps = {
   value: string;
@@ -18,6 +19,7 @@ export default function InputTodo({
 }: InputTodoProps) {
   const [valueInput, setValue] = useState<string>(value);
   const [focus, setFocus] = useState<boolean>(false);
+  const { themeColor } = useTheme();
 
   const classesInput = classNames(
     { "line-through": done },
@@ -33,10 +35,10 @@ export default function InputTodo({
   );
 
   const classesHr = classNames(
-    "border-t-1 mb-1 mx-2 transition transform duration-200 ease-in-out ",
+    "border-t-2 mb-1 mx-2 transition transform duration-200 ease-in-out ",
     {
       "border-slate-600 border-opacity-30": !focus,
-      "border-rose-500 border-opacity-70": focus,
+      [`border-${themeColor}-500 border-opacity-70`]: focus,
     }
   );
 
@@ -73,12 +75,3 @@ export default function InputTodo({
     </>
   );
 }
-
-/* export default memo(InputTodo, (prevProps, nextProps) => {
-  return (
-    prevProps.value === nextProps.value &&
-    prevProps.done === nextProps.done &&
-    prevProps.placeholder === nextProps.placeholder
-  );
-});
- */

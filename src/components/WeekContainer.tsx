@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import getWeekdays from "../util/createWeekdays";
-import DayView from "./DayView.js";
 import { todosContext } from "../storage/TodosContext.js";
+import WeekView from "./WeekView.js";
 
 function WeekContainer() {
   const [weekDays, setWeekDays] = useState<Date[]>([]);
@@ -12,14 +12,7 @@ function WeekContainer() {
     setWeekDays(weekdaysDates);
   }, [activeDate]);
 
-  return (
-    <>
-      {weekDays.length &&
-        weekDays.map((daylist: Date) => (
-          <DayView date={daylist} key={daylist.toString()} />
-        ))}
-    </>
-  );
+  return <WeekView weekDays={weekDays} />;
 }
 
 export default WeekContainer;

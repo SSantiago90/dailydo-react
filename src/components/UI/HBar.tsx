@@ -1,19 +1,22 @@
 import classNames from "classnames";
+import { useTheme } from "../../storage/ThemeContext";
 
 function HBar({
   bold,
-  white,
   className,
 }: {
   bold?: boolean;
   white?: boolean;
   className?: string;
 }) {
+  const { themeColor } = useTheme();
+  console.log("THEME? BAR", themeColor);
   const classes = classNames(
     "mb-5",
-    { "text-white": white },
-    { "border-rose-400 opacity-80 border-b-1": bold },
-    { "border-rose-300 opacity-30 border-t-3": !bold },
+    [`border-${themeColor}-500`],
+
+    { "opacity-80 border-b-1": bold },
+    { "opacity-30 border-t-3": !bold },
     className
   );
 
