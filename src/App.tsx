@@ -12,7 +12,7 @@ function App() {
           <Header />
           <HBar bold />
           <WeekContainer />
-          <HBar className="mt-40" bold />
+          <HBar bold />
         </TodosProvider>
       </ThemeProvider>
     </>

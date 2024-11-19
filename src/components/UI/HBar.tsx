@@ -10,9 +10,7 @@ function HBar({
   className?: string;
 }) {
   const { themeColor } = useTheme();
-  console.log("THEME? BAR", themeColor);
   const classes = classNames(
-    "mb-5",
     [`border-${themeColor}-500`],
 
     { "opacity-80 border-b-1": bold },
