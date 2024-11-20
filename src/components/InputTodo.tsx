@@ -51,12 +51,6 @@ export default function InputTodo({
     }
   );
 
-  console.log(
-    "%c [TodosContext]",
-    "color: #00f069; font-weight: bold",
-    "Context render"
-  );
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
       setFocus(true);
