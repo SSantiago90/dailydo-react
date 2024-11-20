@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import getWeekdays from "../util/createWeekdays";
 import { todosContext } from "../storage/TodosContext.js";
 import WeekView from "./WeekView.js";
-import Loader from "./UI/Loader.js";
 
 function WeekContainer() {
   const [weekDays, setWeekDays] = useState<Date[]>([]);

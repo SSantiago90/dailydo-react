@@ -1,4 +1,10 @@
-import { createContext, useState, ReactNode, useEffect } from "react";
+import {
+  createContext,
+  useState,
+  ReactNode,
+  useEffect,
+  useContext,
+} from "react";
 import { TodosType } from "../types/Todos.types";
 import { getTodosForWeek } from "../services/todosApi";
 import getWeekdays from "../util/createWeekdays";
@@ -10,8 +16,10 @@ type TodosContextType = {
   handleDone: (id: string) => void;
   handleChange: (id: string, text: string) => void;
   handleNewTodo: (date: Date) => void;
+  deleteTodo: (id: string) => void;
   getTodosForDay: (date: Date) => TodosType[];
   setDateTo: (date: Date) => void;
+  getSingleTodo: (id: string) => TodosType | undefined;
   fetching: boolean;
 };
 
@@ -28,6 +36,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     setFetching(true);
     const week = getWeekdays(activeDate);
+
     const fetchData = async () => {
       const weeklyTodos = await getTodosForWeek(activeDate);
       week.forEach((day) => {
@@ -39,7 +48,13 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
           done: false,
         });
       });
-      setTodos(weeklyTodos);
+      const weeklyTodosFormatedDates = weeklyTodos.map((todo) => {
+        return {
+          ...todo,
+          date: new Date(todo.date),
+        };
+      });
+      setTodos(weeklyTodosFormatedDates);
       setFetching(false);
     };
 
@@ -82,8 +97,17 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     return todos.filter((todo) => normalizeDate(todo.date) == normalDate);
   };
 
+  const getSingleTodo = (id: string): TodosType | undefined => {
+    return todos.find((todo) => todo.id === id);
+  };
+
   const setDateTo = (date: Date) => {
     setActiveDate(date);
+  };
+
+  const deleteTodo = (id: string) => {
+    const newTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(newTodos);
   };
 
   return (
@@ -97,9 +121,19 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         activeDate,
         setDateTo,
         fetching,
+        getSingleTodo,
+        deleteTodo,
       }}
     >
       {children}
     </todosContext.Provider>
   );
+};
+
+export const useTodos = () => {
+  const context = useContext(todosContext);
+  if (!context) {
+    throw new Error("useTheme must be used within a ThemeProvider");
+  }
+  return context;
 };

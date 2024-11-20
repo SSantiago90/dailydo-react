@@ -10,4 +10,4 @@ async function getTodosForWeek(date: Date): Promise<TodosType[]> {
 
 
 
-export {  getTodosForWeek};
+export {getTodosForWeek};

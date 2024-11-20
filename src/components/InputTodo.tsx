@@ -1,12 +1,16 @@
 import classNames from "classnames";
-import { CircleCheck } from "lucide-react";
-import { useState } from "react";
+import { CircleCheck, Pencil } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useTheme } from "../storage/ThemeContext";
+import TodoDetails from "./InputDetails";
+import { useTodos } from "../storage/TodosContext";
 
 type InputTodoProps = {
   value: string;
   done?: boolean;
   placeholder?: boolean;
+  id: string;
+  controls?: boolean;
   onClick?: () => void;
   onChange?: (text: string) => void;
 };
@@ -14,32 +18,43 @@ type InputTodoProps = {
 export default function InputTodo({
   onChange,
   onClick,
+  id,
   value,
   done = false,
+  controls = true,
 }: InputTodoProps) {
   const [valueInput, setValue] = useState<string>(value);
   const [focus, setFocus] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const { themeColor } = useTheme();
+  const { deleteTodo } = useTodos();
 
   const classesInput = classNames(
     { "line-through": done },
-    "bg-transparent text-slate-300 py-1 px-4 w-full max-w-full box-border flex outline-none focus-visible:border-none hover:border-none",
+    "bg-transparent text-slate-300 p-1 pt-2 w-full max-w-full box-border flex outline-none focus-visible:border-none hover:border-none",
     { "text-slate-700": done },
-    { "cursor-grab": value !== "" }
+    { "cursor-text": value !== "" }
   );
 
   const classesIcon = classNames(
-    { "text-slate-600": done },
+    { "text-slate-400": done },
     { "text-white": !done },
-    "text-slate-600 hover:text-slate-700 cursor-pointer mr-2"
+    [`hover:text-${themeColor}-500 cursor-pointer mr-2`]
   );
 
   const classesHr = classNames(
-    "border-t-2 mb-1 mx-2 transition transform duration-200 ease-in-out ",
+    "border-t-2 mb-1 transition transform duration-200 ease-in-out ",
     {
       "border-slate-600 border-opacity-30": !focus,
       [`border-${themeColor}-500 border-opacity-70`]: focus,
     }
+  );
+
+  console.log(
+    "%c [TodosContext]",
+    "color: #00f069; font-weight: bold",
+    "Context render"
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,6 +64,16 @@ export default function InputTodo({
       onChange(e.target.value);
     }
   };
+
+  const handleDelete = (id: string) => {
+    deleteTodo(id);
+  };
+
+  const openModal = () => setIsOpen(true);
+
+  const closeModal = () => setIsOpen(false);
+
+  useEffect(() => setValue(value), [value]);
 
   return (
     <>
@@ -61,17 +86,32 @@ export default function InputTodo({
           type="text"
           value={valueInput}
         />
-        {value !== "" && (
-          <CircleCheck
-            strokeWidth={1.7}
-            opacity={0.8}
-            size={18}
-            onClick={onClick}
-            className={classesIcon}
-          />
+        {value !== "" && controls && (
+          <>
+            <Pencil
+              strokeWidth={1.7}
+              opacity={0.8}
+              size={18}
+              onClick={openModal}
+              className={classesIcon}
+            />
+            <CircleCheck
+              strokeWidth={1.7}
+              opacity={0.8}
+              size={18}
+              onClick={onClick}
+              className={classesIcon}
+            />
+          </>
         )}
       </li>
       <hr className={classesHr} />
+      <TodoDetails
+        onDelete={() => handleDelete(id)}
+        isOpen={isOpen}
+        onClose={closeModal}
+        id={id}
+      />
     </>
   );
 }

@@ -3,6 +3,7 @@ import WeekContainer from "./components/WeekContainer.tsx";
 import Header from "./components/Header.tsx";
 import { TodosProvider } from "./storage/TodosContext.tsx";
 import { ThemeProvider } from "./storage/ThemeContext.tsx";
+import { StrictMode } from "react";
 
 function App() {
   /* 
@@ -14,16 +15,16 @@ function App() {
   })(); */
 
   return (
-    <>
+    <StrictMode>
       <ThemeProvider>
         <TodosProvider>
           <Header />
           <HBar bold />
           <WeekContainer />
-          <HBar bold />
+          {/*  <HBar bold /> */}
         </TodosProvider>
       </ThemeProvider>
-    </>
+    </StrictMode>
   );
 }
 
