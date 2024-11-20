@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { useTheme } from "../storage/ThemeContext";
 import { CircleX, Trash } from "lucide-react";
 import { useTodos } from "../storage/TodosContext";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TodosType } from "../types/Todos.types";
 import HBar from "./UI/HBar";
 import InputTodo from "./InputTodo";
@@ -14,9 +14,9 @@ type TodoDetailsProps = {
   id: string;
 };
 export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
-  const [todo, setTodo] = useState<TodosType | null>(null);
-
   const { isOpen, onClose, onDelete, id } = TodoDetailsProps;
+
+  const [todo, setTodo] = useState<TodosType | null>(null);
   const { themeColor } = useTheme();
   const { getSingleTodo, handleChange } = useTodos();
 
@@ -24,6 +24,23 @@ export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
     const todo = getSingleTodo(id) as TodosType | null;
     setTodo(todo);
   }, [id, getSingleTodo]);
+
+  const initialTodoRef = useRef<string>("");
+  console.log(
+    `%c Rendering TodoDetail ${initialTodoRef.current}`,
+    `color:pink`
+  );
+
+  useEffect(() => {
+    const initialTodo = getSingleTodo(id) as TodosType | null;
+    initialTodoRef.current = initialTodo?.task || "";
+  }, []);
+
+  const handleDiscard = () => {
+    if (!todo) return;
+    handleChange(todo.id, initialTodoRef.current);
+    onClose();
+  };
 
   return (
     <Modal
@@ -50,12 +67,20 @@ export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
             </p>
           </div>
           <HBar />
-          <button
-            onClick={onClose}
-            className={`text-slate-500 py-2 px-4 rounded-lg border-slate-500 border-1`}
-          >
-            Close
-          </button>
+          <div className="flex flex-row gap-5 justify-around">
+            <button
+              onClick={onClose}
+              className={`text-slate-500 hover:text-green-500 py-2 px-4 rounded-lg border-slate-500 border-1`}
+            >
+              Save
+            </button>
+            <button
+              onClick={handleDiscard}
+              className={`text-rose-800 hover:text-rose-600 py-2 px-4 rounded-lg border-slate-500 border-1`}
+            >
+              Discard
+            </button>
+          </div>
         </div>
       )}
     </Modal>

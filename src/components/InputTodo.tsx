@@ -100,12 +100,14 @@ export default function InputTodo({
         )}
       </li>
       <hr className={classesHr} />
-      <TodoDetails
-        onDelete={() => handleDelete(id)}
-        isOpen={isOpen}
-        onClose={closeModal}
-        id={id}
-      />
+      {isOpen && (
+        <TodoDetails
+          onDelete={() => handleDelete(id)}
+          isOpen={isOpen}
+          onClose={closeModal}
+          id={id}
+        />
+      )}
     </>
   );
 }
