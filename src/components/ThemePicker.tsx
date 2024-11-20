@@ -23,6 +23,7 @@ function ThemePicker() {
         <div className="flex gap-2">
           {colors.map((color) => (
             <button
+              key={color}
               onClick={() => {
                 setIsOpen(false);
                 handleColorChange(color);

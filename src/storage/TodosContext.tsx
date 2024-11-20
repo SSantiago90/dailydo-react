@@ -1,7 +1,8 @@
 import { createContext, useState, ReactNode, useEffect } from "react";
 import { TodosType } from "../types/Todos.types";
-import { getTodosForWeek } from "../services/mockDataAsync";
+import { getTodosForWeek } from "../services/todosApi";
 import getWeekdays from "../util/createWeekdays";
+import normalizeDate from "../util/normalizeDate";
 
 type TodosContextType = {
   todos: TodosType[];
@@ -27,9 +28,8 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     setFetching(true);
     const week = getWeekdays(activeDate);
-    //const weeklyTodos = getTodosForWeek(week);
     const fetchData = async () => {
-      const weeklyTodos = await getTodosForWeek(week);
+      const weeklyTodos = await getTodosForWeek(activeDate);
       week.forEach((day) => {
         // add an empty "todo" for everyday
         weeklyTodos.push({
@@ -78,9 +78,8 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getTodosForDay = (date: Date) => {
-    return todos.filter((todo) => {
-      return todo.date.toLocaleDateString() == date.toLocaleDateString();
-    });
+    const normalDate = normalizeDate(date);
+    return todos.filter((todo) => normalizeDate(todo.date) == normalDate);
   };
 
   const setDateTo = (date: Date) => {
