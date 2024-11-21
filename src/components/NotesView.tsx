@@ -34,7 +34,7 @@ function NotesView({
         </h3>
       </div>
       <HBar white semibold />
-      <div className="flex flex-col xl:flex-row gap-3 mx-auto my-2 p-8 w-full items-baseline">
+      <div className="flex flex-col xl:flex-row gap-3 mx-auto my-2 p-8 w-full xl:items-baseline">
         {positions.map((position) => (
           <ul key={position} className="list-none flex flex-col p-1 grow mb-2">
             {notesList[position].map((note, index) => (
