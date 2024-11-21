@@ -67,7 +67,9 @@ export default function InputTodo({
 
   const closeModal = () => setIsOpen(false);
 
-  useEffect(() => setValue(value), [value]);
+  useEffect(() => {
+    return setValue(value);
+  }, [value]);
 
   return (
     <>

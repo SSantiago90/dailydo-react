@@ -45,7 +45,7 @@ export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
       onClose={onClose}
       onDelete={onDelete}
     >
-      {todo === null ? (
+      {!todo ? (
         <p>Todo not found</p>
       ) : (
         <div className="flex gap-4 flex-col text-left">
@@ -59,7 +59,8 @@ export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
             />
             {/* <h2 className="font-bold text-lg">{todo.task}</h2> */}
             <p className={`text-xs text-right text-${themeColor}-500`}>
-              Created on: {todo.date.toLocaleDateString()}
+              <>{console.log("--------------------------", todo)}</>
+              Created on: {new Date(todo.date).toLocaleDateString()}
             </p>
           </div>
           <HBar />
