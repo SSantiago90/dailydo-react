@@ -58,7 +58,9 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       setFetching(false);
     };
 
-    fetchData();
+    fetchData().catch((error) =>
+      console.error("%c Error fetching data:", "color: red", error)
+    );
   }, [activeDate]);
 
   const handleDone = (todoId: string) => {

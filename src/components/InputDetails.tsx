@@ -26,10 +26,6 @@ export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
   }, [id, getSingleTodo]);
 
   const initialTodoRef = useRef<string>("");
-  console.log(
-    `%c Rendering TodoDetail ${initialTodoRef.current}`,
-    `color:pink`
-  );
 
   useEffect(() => {
     const initialTodo = getSingleTodo(id) as TodosType | null;

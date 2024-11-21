@@ -19,9 +19,8 @@ function App() {
       <ThemeProvider>
         <TodosProvider>
           <Header />
-          <HBar bold />
+
           <WeekContainer />
-          {/*  <HBar bold /> */}
         </TodosProvider>
       </ThemeProvider>
     </StrictMode>

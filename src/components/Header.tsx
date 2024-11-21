@@ -1,7 +1,6 @@
 import { useTheme } from "../storage/ThemeContext";
 import DatePicker from "./DatePicker";
 import NavMenu from "./NavMenu";
-import ThemePicker from "./ThemePicker";
 
 function Header() {
   const { themeColor } = useTheme();
