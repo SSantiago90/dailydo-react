@@ -31,8 +31,8 @@ export default function InputTodo({
   const { deleteTodo } = useTodos();
 
   const classesInput = classNames(
+    "bg-transparent text-slate-300 focus:ring-0 focus:border-none border-none click:border-none p-1 pt-2 w-full max-w-full box-border flex outline-none focus-visible:border-none hover:border-none",
     { "line-through": done },
-    "bg-transparent text-slate-300 p-1 pt-2 w-full max-w-full box-border flex outline-none focus-visible:border-none hover:border-none",
     { "text-slate-700": done },
     { "cursor-text": value !== "" }
   );
@@ -73,6 +73,7 @@ export default function InputTodo({
     <>
       <li className="flex-1 w-full flex items-center">
         <input
+          autoFocus={!controls}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
           onChange={handleChange}

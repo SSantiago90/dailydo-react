@@ -30,7 +30,7 @@ export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
   useEffect(() => {
     const initialTodo = getSingleTodo(id) as TodosType | null;
     initialTodoRef.current = initialTodo?.task || "";
-  }, []);
+  }, [id]);
 
   const handleDiscard = () => {
     if (!todo) return;
