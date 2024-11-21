@@ -4,6 +4,7 @@ import Header from "./components/Header.tsx";
 import { TodosProvider } from "./storage/TodosContext.tsx";
 import { ThemeProvider } from "./storage/ThemeContext.tsx";
 import { StrictMode } from "react";
+import NotesContainer from "./components/NotesContainer.tsx";
 
 function App() {
   /* 
@@ -21,7 +22,8 @@ function App() {
           <Header />
           <HBar bold />
           <WeekContainer />
-          {/*  <HBar bold /> */}
+          <></>
+          <NotesContainer />
         </TodosProvider>
       </ThemeProvider>
     </StrictMode>

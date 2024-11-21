@@ -6,13 +6,17 @@ import {
   useContext,
 } from "react";
 import { TodosType } from "../types/Todos.types";
+import { NotesType } from "../types/Notes.types";
 import { getTodosForWeek } from "../services/todosApi";
 import getWeekdays from "../util/createWeekdays";
 import normalizeDate from "../util/normalizeDate";
 
 type TodosContextType = {
   todos: TodosType[];
+  notes: NotesType[];
   activeDate: Date;
+  fetching: boolean;
+  fetchingNotes: boolean;
   handleDone: (id: string) => void;
   handleChange: (id: string, text: string) => void;
   handleNewTodo: (date: Date) => void;
@@ -20,7 +24,6 @@ type TodosContextType = {
   getTodosForDay: (date: Date) => TodosType[];
   setDateTo: (date: Date) => void;
   getSingleTodo: (id: string) => TodosType | undefined;
-  fetching: boolean;
 };
 
 export const todosContext = createContext<TodosContextType>(
@@ -29,23 +32,27 @@ export const todosContext = createContext<TodosContextType>(
 
 export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const [todos, setTodos] = useState<TodosType[]>([]);
+  const [notes, setNotes] = useState<NotesType[]>([]);
+
   const [activeDate, setActiveDate] = useState(new Date());
   const [fetching, setFetching] = useState(true);
+  const [fetchingNotes, setFetchingNotes] = useState(true);
 
-  // setup mockup data
+  // Fetch data for weekly todos
   useEffect(() => {
     setFetching(true);
     const week = getWeekdays(activeDate);
 
     const fetchData = async () => {
       const weeklyTodos = await getTodosForWeek(activeDate);
+
       week.forEach((day) => {
         // add an empty "todo" for everyday
         weeklyTodos.push({
-          date: day,
           id: crypto.randomUUID(),
           task: "",
           done: false,
+          date: day,
         });
       });
       const weeklyTodosFormatedDates = weeklyTodos.map((todo) => {
@@ -55,13 +62,41 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         };
       });
       setTodos(weeklyTodosFormatedDates);
-      setFetching(false);
     };
 
-    fetchData().catch((error) =>
-      console.error("%c Error fetching data:", "color: red", error)
-    );
+    fetchData()
+      .catch((error) =>
+        console.error("%c Error fetching data:", "color: red", error)
+      )
+      .finally(() => setFetching(false));
   }, [activeDate]);
+
+  // fetch data for notes
+  useEffect(() => {
+    setFetchingNotes(true);
+    const fetchNotes = async () => {
+      const positions = [1, 2, 3];
+      const response = await fetch("http://localhost:3000/todos/notes");
+      const notes = await response.json();
+
+      // add an empty "todo" for everyday
+      positions.forEach((position) => {
+        notes.push({
+          id: crypto.randomUUID(),
+          task: "",
+          done: false,
+          date: new Date(),
+          position: position,
+        });
+      });
+      setNotes(notes);
+    };
+    fetchNotes()
+      .catch((error) =>
+        console.error("%c Error fetching data:", "color: red", error)
+      )
+      .finally(() => setFetchingNotes(false));
+  }, []);
 
   const handleDone = (todoId: string) => {
     const newTodos = todos.map((todo) => {
@@ -125,6 +160,8 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         fetching,
         getSingleTodo,
         deleteTodo,
+        notes,
+        fetchingNotes,
       }}
     >
       {children}
