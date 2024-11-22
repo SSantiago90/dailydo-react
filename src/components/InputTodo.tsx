@@ -53,7 +53,7 @@ export default function InputTodo({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
-      setFocus(true);
+      //setFocus(true);
       setValue(e.target.value);
       onChange(e.target.value);
     }

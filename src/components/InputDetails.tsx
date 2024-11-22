@@ -59,7 +59,6 @@ export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
             />
             {/* <h2 className="font-bold text-lg">{todo.task}</h2> */}
             <p className={`text-xs text-right text-${themeColor}-500`}>
-              <>{console.log("--------------------------", todo)}</>
               Created on: {new Date(todo.date).toLocaleDateString()}
             </p>
           </div>

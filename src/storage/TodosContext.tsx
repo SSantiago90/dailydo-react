@@ -17,8 +17,6 @@ type TodosContextType = {
   fetching: boolean;
   handleDone: (id: string) => void;
   handleChange: (id: string, text: string) => void;
-  handleNewTodo: (date: Date) => void;
-  handleNewNote: (position: 1 | 2 | 3 | 0) => void;
   deleteTodo: (id: string) => void;
   getTodosForDay: (date: Date) => TodosType[];
   setDateTo: (date: Date) => void;
@@ -29,6 +27,10 @@ export const todosContext = createContext<TodosContextType>(
   {} as TodosContextType
 );
 
+function log(text: unknown) {
+  console.log("%c [Context] ", "color: rgb(0, 255, 150);", text);
+}
+
 export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const [todos, setTodos] = useState<TodosType[]>([]);
   const [notes, setNotes] = useState<TodosType[]>([]);
@@ -36,7 +38,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
 
   const [activeDate, setActiveDate] = useState(new Date());
 
-  const mergedTodos = [...todos, ...notes];
+  //const mergedTodos = [...todos, ...notes];
 
   // Fetch data
   useEffect(() => {
@@ -94,8 +96,6 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const handleDone = (todoId: string) => {
     const doneTodo = todos.findIndex((todo) => todo.id === todoId);
     const doneNote = notes.findIndex((note) => note.id === todoId);
-    console.log(doneTodo, doneNote);
-    console.log(getSingleTodo(todoId)?.task);
 
     if (doneTodo !== -1) {
       const newTodos = [...todos];
@@ -110,44 +110,62 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleChange = (id: string, text: string) => {
-    const newTodos = mergedTodos.map((todo) => {
-      if (todo.id === id) {
-        return { ...todo, task: text };
+    const todoEdited =
+      todos.find((todo) => todo.id === id) ||
+      notes.find((todo) => todo.id === id);
+    if (!todoEdited) return false;
+
+    const dateString = normalizeDate(todoEdited.date);
+
+    log(todoEdited);
+
+    if (todoEdited.isNote === 0) {
+      const todosForDay = todos.filter(
+        (todo) => normalizeDate(todo.date) === dateString
+      );
+      const isLastElement = todosForDay[todosForDay.length - 1].id === id;
+
+      const newTodos = todos.map((todo) => {
+        if (todo.id === id) {
+          return { ...todo, task: text };
+        }
+        return todo;
+      });
+
+      if (isLastElement) {
+        newTodos.push({
+          id: crypto.randomUUID(),
+          date: todoEdited.date,
+          task: "",
+          done: false,
+          isNote: 0,
+        });
       }
-      return todo;
-    });
-    const newNotes = notes.map((note) => {
-      if (note.id === id) {
-        return { ...note, task: text };
+      setTodos(newTodos);
+    } else {
+      const notesForPosition = notes.filter(
+        (note) => note.isNote === todoEdited.isNote
+      );
+      const isLastElement =
+        notesForPosition[notesForPosition.length - 1].id === id;
+      const newNotes = notes.map((note) => {
+        if (note.id === id) {
+          return { ...note, task: text };
+        }
+        return note;
+      });
+
+      if (isLastElement) {
+        newNotes.push({
+          id: crypto.randomUUID(),
+          date: new Date(),
+          task: "",
+          done: false,
+          isNote: todoEdited.isNote,
+        });
       }
-      return note;
-    });
-    setTodos(newTodos);
-    setNotes(newNotes);
-  };
-
-  const handleNewTodo = (date: Date) => {
-    const newTodo = {
-      id: crypto.randomUUID(),
-      date: date,
-      task: "",
-      done: false,
-      isNote: 0,
-    } as TodosType;
-
-    setTodos([...todos, newTodo]);
-  };
-
-  const handleNewNote = (position: 1 | 2 | 3) => {
-    const newNote = {
-      id: crypto.randomUUID(),
-      date: new Date(),
-      task: "",
-      done: false,
-      isNote: position,
-    } as TodosType;
-
-    setNotes([...notes, newNote]);
+      setNotes(newNotes);
+    }
   };
 
   const getTodosForDay = (date: Date) => {
@@ -177,8 +195,6 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         todos,
         handleDone,
         handleChange,
-        handleNewTodo,
-        handleNewNote,
         getTodosForDay,
         activeDate,
         setDateTo,

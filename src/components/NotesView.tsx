@@ -9,12 +9,7 @@ type NotesViewProps = {
   handleDone: (id: string) => void;
   handleNewNote: (position: 1 | 2 | 3) => void;
 };
-function NotesView({
-  notesList,
-  handleChange,
-  handleDone,
-  handleNewNote,
-}: NotesViewProps) {
+function NotesView({ notesList, handleChange, handleDone }: NotesViewProps) {
   const { themeColor } = useTheme();
 
   const positions = [0, 1, 2];
@@ -37,20 +32,13 @@ function NotesView({
       <div className="flex flex-col xl:flex-row gap-3 mx-auto my-2 p-8 w-full xl:items-baseline">
         {positions.map((position) => (
           <ul key={position} className="list-none flex flex-col p-1 grow mb-2">
-            {notesList[position].map((note, index) => (
+            {notesList[position].map((note) => (
               <InputTodo
                 key={note.id}
                 id={note.id}
                 done={note.done}
                 value={note.task}
-                onChange={
-                  index === notesList[position].length - 1
-                    ? (text) => {
-                        handleChange(note.id, text);
-                        return handleNewNote((position + 1) as 1 | 2 | 3);
-                      }
-                    : (text) => handleChange(note.id, text)
-                }
+                onChange={(text) => handleChange(note.id, text)}
                 onClick={() => handleDone(note.id)}
               />
             ))}

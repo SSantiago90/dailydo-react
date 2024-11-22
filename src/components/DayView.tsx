@@ -38,23 +38,18 @@ function DayView({ date }: DayViewProps) {
 
       <div>
         <ul className="list-none flex flex-col p-1">
-          {todos.map((todo, index) => (
-            <InputTodo
-              key={todo.id}
-              id={todo.id}
-              value={todo.task}
-              done={todo.done}
-              onChange={
-                index === todos.length - 1
-                  ? (text) => {
-                      handleChange(todo.id, text);
-                      return handleNewTodo(date);
-                    }
-                  : (text) => handleChange(todo.id, text)
-              }
-              onClick={() => handleDone(todo.id)}
-            />
-          ))}
+          {todos.map((todo) => {
+            return (
+              <InputTodo
+                key={todo.id}
+                id={todo.id}
+                value={todo.task}
+                done={todo.done}
+                onChange={(text) => handleChange(todo.id, text)}
+                onClick={() => handleDone(todo.id)}
+              />
+            );
+          })}
         </ul>
       </div>
     </div>
