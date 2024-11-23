@@ -11,10 +11,11 @@ type TodoDetailsProps = {
   isOpen: boolean;
   onClose: () => void;
   onDelete: () => void;
+  onDone: () => void;
   id: string;
 };
 export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
-  const { isOpen, onClose, onDelete, id } = TodoDetailsProps;
+  const { isOpen, onClose, onDone, onDelete, id } = TodoDetailsProps;
 
   const [todo, setTodo] = useState<TodosType | null>(null);
   const { themeColor } = useTheme();
@@ -52,6 +53,8 @@ export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
           <div className="flex gap-1 flex-col text-left mb-8">
             <InputTodo
               onChange={(text) => handleChange(todo.id, text)}
+              onDelete={onDelete}
+              onClick={onDone}
               controls={false}
               value={todo.task}
               done={todo.done}

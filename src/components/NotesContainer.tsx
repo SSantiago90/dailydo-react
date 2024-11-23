@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 function NotesContainer() {
   const [sortedNotes, setSortedNotes] = useState<TodosType[][]>([[], [], []]);
-  const { notes, handleChange, handleDone } = useTodos();
+  const { notes, handleChange, handleDone, handleDelete } = useTodos();
 
   useEffect(() => {
     const groupedNotesByPosition = [[], [], []] as TodosType[][];
@@ -22,6 +22,7 @@ function NotesContainer() {
         <NotesView
           handleChange={handleChange}
           handleDone={handleDone}
+          handleDelete={handleDelete}
           notesList={sortedNotes}
         />
       )}

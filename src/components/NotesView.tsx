@@ -8,8 +8,14 @@ type NotesViewProps = {
   notesList: TodosType[][];
   handleChange: (id: string, text: string) => void;
   handleDone: (id: string) => void;
+  handleDelete: (id: string) => void;
 };
-function NotesView({ notesList, handleChange, handleDone }: NotesViewProps) {
+function NotesView({
+  notesList,
+  handleChange,
+  handleDone,
+  handleDelete,
+}: NotesViewProps) {
   const { themeColor } = useTheme();
 
   const positions = [0, 1, 2];
@@ -40,6 +46,7 @@ function NotesView({ notesList, handleChange, handleDone }: NotesViewProps) {
                 value={note.task}
                 onChange={(text) => handleChange(note.id, text)}
                 onClick={() => handleDone(note.id)}
+                onDelete={() => handleDelete(note.id)}
               />
             ))}
           </ul>

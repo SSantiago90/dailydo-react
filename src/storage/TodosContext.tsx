@@ -4,6 +4,7 @@ import {
   ReactNode,
   useEffect,
   useContext,
+  useCallback,
 } from "react";
 import { TodosType } from "../types/Todos.types";
 import { getTodosForWeek, getAllNotes } from "../services/todosApi";
@@ -42,6 +43,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     const fetchData = async () => {
       setFetching(true);
       const week = getWeekdays(activeDate);
+
       // * get all todos for this week 7 days ------------------------
       const weeklyTodos = await getTodosForWeek(activeDate);
 
@@ -91,39 +93,51 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         console.error("%c Error fetching data:", "color: red", error)
       )
       .finally(() => setFetching(false));
+    // notes are fetched only once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeDate]);
 
-  const handleDone = (todoId: string) => {
-    const doneTodo = todos.findIndex((todo) => todo.id === todoId);
-    const doneNote = notes.findIndex((note) => note.id === todoId);
+  const handleDone = useCallback((todoId: string) => {
+    setTodos((prevTodos) => {
+      const doneTodo = prevTodos.find((todo) => todo.id === todoId);
+      if (doneTodo?.isNote) return prevTodos;
 
-    if (doneTodo !== -1) {
-      const newTodos = [...todos];
-      newTodos[doneTodo].done = !newTodos[doneTodo].done;
-      setTodos(newTodos);
-    }
-    if (doneNote !== -1) {
-      const newNotes = [...notes];
-      newNotes[doneNote].done = !newNotes[doneNote].done;
-      setNotes(newNotes);
-    }
-  };
+      return prevTodos.map((todo) => {
+        if (todo.id === todoId) {
+          return { ...todo, done: !todo.done };
+        }
+        return todo;
+      });
+    });
 
-  const handleChange = (id: string, text: string) => {
-    const todoEdited =
-      todos.find((todo) => todo.id === id) ||
-      notes.find((todo) => todo.id === id);
-    if (!todoEdited) return false;
+    setTodos((prevTodos) => {
+      const doneTodo = prevTodos.find((todo) => todo.id === todoId);
+      if (!doneTodo?.isNote) return prevTodos;
 
-    const dateString = normalizeDate(todoEdited.date);
+      return prevTodos.map((todo) => {
+        if (todo.id === todoId) {
+          return { ...todo, done: !todo.done };
+        }
+        return todo;
+      });
+    });
+  }, []);
 
-    if (todoEdited.isNote === 0) {
-      const todosForDay = todos.filter(
+  const handleChange = useCallback((id: string, text: string) => {
+    setTodos((prevTodos) => {
+      const todoEdited = prevTodos.find((todo) => todo.id === id);
+      if (!todoEdited) return prevTodos;
+
+      // normalize date and organize by date
+      const dateString = normalizeDate(todoEdited.date);
+      const todosForDay = prevTodos.filter(
         (todo) => normalizeDate(todo.date) === dateString
       );
-      const isLastElement = todosForDay[todosForDay.length - 1].id === id;
+      //check last element, if it is, create an empty elementç
+      const isLastElement = todosForDay[todosForDay.length - 1]?.id === id;
 
-      /*     const newTodos = todos.map((todo) => {
+      const modifiedTodos = prevTodos.map((todo) => {
+        if (!todoEdited) return todo;
         if (todo.id === id) {
           return { ...todo, task: text };
         }
@@ -131,37 +145,40 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (isLastElement) {
-        newTodos.push({
+        modifiedTodos.push({
           id: crypto.randomUUID(),
           date: todoEdited.date,
           task: "",
           done: false,
           isNote: 0,
         });
-      } */
-      setTodos((prevState) =>
-        prevState.map((todo) => {
-          if (todo.id === id) {
-            return { ...todo, task: text };
-          }
-          return todo;
-        })
+      }
+
+      return modifiedTodos;
+    });
+
+    setNotes((prevTodos) => {
+      const todoEdited = prevTodos.find((todo) => todo.id === id);
+      if (!todoEdited) return prevTodos;
+
+      // normalize date and organize by date
+      const todosForPosition = prevTodos.filter(
+        (todo) => todo.isNote === todoEdited.isNote
       );
-    } else {
-      const notesForPosition = notes.filter(
-        (note) => note.isNote === todoEdited.isNote
-      );
+      //check last element, if it is, create an empty element
       const isLastElement =
-        notesForPosition[notesForPosition.length - 1].id === id;
-      const newNotes = notes.map((note) => {
-        if (note.id === id) {
-          return { ...note, task: text };
+        todosForPosition[todosForPosition.length - 1]?.id === id;
+
+      const modifiedTodos = prevTodos.map((todo) => {
+        if (!todoEdited) return todo;
+        if (todo.id === id) {
+          return { ...todo, task: text };
         }
-        return note;
+        return todo;
       });
 
       if (isLastElement) {
-        newNotes.push({
+        modifiedTodos.push({
           id: crypto.randomUUID(),
           date: new Date(),
           task: "",
@@ -169,9 +186,10 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
           isNote: todoEdited.isNote,
         });
       }
-      setNotes(newNotes);
-    }
-  };
+
+      return modifiedTodos;
+    });
+  }, []);
 
   const getTodosForDay = (date: Date) => {
     const normalDate = normalizeDate(date);
@@ -189,15 +207,11 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     setActiveDate(date);
   };
 
-  const handleDelete = (id: string) => {
-    const isNote = [...todos, ...notes].find((todo) => todo.id === id)?.isNote;
+  const handleDelete = useCallback((id: string) => {
+    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
 
-    if (isNote) {
-      setNotes(notes.filter((todo) => todo.id !== id));
-    } else {
-      setTodos(todos.filter((todo) => todo.id !== id));
-    }
-  };
+    setNotes((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+  }, []);
 
   return (
     <todosContext.Provider

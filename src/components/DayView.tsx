@@ -1,6 +1,6 @@
 import InputTodo from "./InputTodo";
 import HBar from "./UI/HBar";
-import { useCallback, useContext } from "react";
+import { useContext } from "react";
 import { todosContext } from "../storage/TodosContext";
 import { useTheme } from "../storage/ThemeContext";
 

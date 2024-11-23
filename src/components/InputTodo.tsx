@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { CircleCheck, Pencil } from "lucide-react";
-import { useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useTheme } from "../storage/ThemeContext";
 import TodoDetails from "./InputDetails";
 
@@ -24,6 +24,7 @@ function InputTodo({
   done = false,
   controls = true,
 }: InputTodoProps) {
+  const [valueInput, setValue] = useState<string>(value);
   const [focus, setFocus] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -53,7 +54,7 @@ function InputTodo({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
       //setFocus(true);
-      //setValue(e.target.value);
+      setValue(e.target.value);
       onChange(e.target.value);
     }
   };
@@ -62,9 +63,9 @@ function InputTodo({
 
   const closeModal = () => setIsOpen(false);
 
-  /* useEffect(() => {
+  useEffect(() => {
     return setValue(value);
-  }, [value]); */
+  }, [value]);
 
   return (
     <>
@@ -76,7 +77,7 @@ function InputTodo({
           onChange={handleChange}
           className={classesInput}
           type="text"
-          value={value}
+          value={valueInput}
         />
         {value !== "" && controls && (
           <>
@@ -101,6 +102,7 @@ function InputTodo({
       {isOpen && (
         <TodoDetails
           onDelete={onDelete}
+          onDone={onClick}
           isOpen={isOpen}
           onClose={closeModal}
           id={id}
@@ -110,4 +112,17 @@ function InputTodo({
   );
 }
 
-export default InputTodo;
+/**
+ * This renders when the value of the todo changes or the id of the todo changes.
+ * It's memoized so that it doesn't re-render unnecessarily.
+ * This is important because the children of the InputTodo component are memoized
+ * as well, so if the InputTodo component re-renders, the children will also re-render.
+ * This can cause performance issues if the InputTodo component is re-rendered frequently.
+ */
+export default memo(InputTodo, (prevProps, nextProps) => {
+  return (
+    prevProps.done === nextProps.done &&
+    prevProps.value === nextProps.value &&
+    prevProps.id === nextProps.id
+  );
+});
