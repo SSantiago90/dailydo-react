@@ -17,7 +17,7 @@ type TodosContextType = {
   fetching: boolean;
   handleDone: (id: string) => void;
   handleChange: (id: string, text: string) => void;
-  deleteTodo: (id: string) => void;
+  handleDelete: (id: string) => void;
   getTodosForDay: (date: Date) => TodosType[];
   setDateTo: (date: Date) => void;
   getSingleTodo: (id: string) => TodosType | undefined;
@@ -38,11 +38,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
 
   const [activeDate, setActiveDate] = useState(new Date());
 
-  //const mergedTodos = [...todos, ...notes];
-
-  // Fetch data
   useEffect(() => {
-    log("rendering and fetching data");
     const fetchData = async () => {
       setFetching(true);
       const week = getWeekdays(activeDate);
@@ -64,7 +60,6 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       // only fetch notes if there aren't loaded yet
       if (notes.length > 0) return { todos: weeklyTodos, notes };
       else {
-        log("fetching notes");
         const notesTodos = await getAllNotes();
         // add an empty "todo" for everyday
         const positions = [1, 2, 3];
@@ -128,7 +123,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       );
       const isLastElement = todosForDay[todosForDay.length - 1].id === id;
 
-      const newTodos = todos.map((todo) => {
+      /*     const newTodos = todos.map((todo) => {
         if (todo.id === id) {
           return { ...todo, task: text };
         }
@@ -143,8 +138,15 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
           done: false,
           isNote: 0,
         });
-      }
-      setTodos(newTodos);
+      } */
+      setTodos((prevState) =>
+        prevState.map((todo) => {
+          if (todo.id === id) {
+            return { ...todo, task: text };
+          }
+          return todo;
+        })
+      );
     } else {
       const notesForPosition = notes.filter(
         (note) => note.isNote === todoEdited.isNote
@@ -187,7 +189,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     setActiveDate(date);
   };
 
-  const deleteTodo = (id: string) => {
+  const handleDelete = (id: string) => {
     const isNote = [...todos, ...notes].find((todo) => todo.id === id)?.isNote;
 
     if (isNote) {
@@ -208,7 +210,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         setDateTo,
         fetching,
         getSingleTodo,
-        deleteTodo,
+        handleDelete,
         notes,
       }}
     >

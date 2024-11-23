@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useTheme } from "../storage/ThemeContext";
 import { TodosType } from "../types/Todos.types";
 import InputTodo from "./InputTodo";
@@ -48,4 +49,7 @@ function NotesView({ notesList, handleChange, handleDone }: NotesViewProps) {
   );
 }
 
-export default NotesView;
+export default memo(
+  NotesView,
+  (prevProps, nextProps) => prevProps.notesList === nextProps.notesList
+);

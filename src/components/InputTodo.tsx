@@ -1,9 +1,8 @@
 import classNames from "classnames";
 import { CircleCheck, Pencil } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTheme } from "../storage/ThemeContext";
 import TodoDetails from "./InputDetails";
-import { useTodos } from "../storage/TodosContext";
 
 type InputTodoProps = {
   value: string;
@@ -11,24 +10,24 @@ type InputTodoProps = {
   placeholder?: boolean;
   id: string;
   controls?: boolean;
-  onClick?: () => void;
-  onChange?: (text: string) => void;
+  onClick: () => void;
+  onChange: (text: string) => void;
+  onDelete: () => void;
 };
 
-export default function InputTodo({
+function InputTodo({
   onChange,
   onClick,
+  onDelete,
   id,
   value,
   done = false,
   controls = true,
 }: InputTodoProps) {
-  const [valueInput, setValue] = useState<string>(value);
   const [focus, setFocus] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const { themeColor } = useTheme();
-  const { deleteTodo } = useTodos();
 
   const classesInput = classNames(
     "bg-transparent text-slate-300 focus:ring-0 focus:border-none border-none click:border-none p-1 pt-2 w-full max-w-full box-border flex outline-none focus-visible:border-none hover:border-none",
@@ -54,22 +53,18 @@ export default function InputTodo({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
       //setFocus(true);
-      setValue(e.target.value);
+      //setValue(e.target.value);
       onChange(e.target.value);
     }
-  };
-
-  const handleDelete = (id: string) => {
-    deleteTodo(id);
   };
 
   const openModal = () => setIsOpen(true);
 
   const closeModal = () => setIsOpen(false);
 
-  useEffect(() => {
+  /* useEffect(() => {
     return setValue(value);
-  }, [value]);
+  }, [value]); */
 
   return (
     <>
@@ -81,7 +76,7 @@ export default function InputTodo({
           onChange={handleChange}
           className={classesInput}
           type="text"
-          value={valueInput}
+          value={value}
         />
         {value !== "" && controls && (
           <>
@@ -105,7 +100,7 @@ export default function InputTodo({
       <hr className={classesHr} />
       {isOpen && (
         <TodoDetails
-          onDelete={() => handleDelete(id)}
+          onDelete={onDelete}
           isOpen={isOpen}
           onClose={closeModal}
           id={id}
@@ -114,3 +109,5 @@ export default function InputTodo({
     </>
   );
 }
+
+export default InputTodo;

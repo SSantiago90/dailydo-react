@@ -1,6 +1,6 @@
 import InputTodo from "./InputTodo";
 import HBar from "./UI/HBar";
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { todosContext } from "../storage/TodosContext";
 import { useTheme } from "../storage/ThemeContext";
 
@@ -10,13 +10,15 @@ type DayViewProps = {
 
 function DayView({ date }: DayViewProps) {
   const { themeColor } = useTheme();
-  const { getTodosForDay, handleChange, handleDone } = useContext(todosContext);
+  const { getTodosForDay, handleChange, handleDone, handleDelete } =
+    useContext(todosContext);
 
   const day = date.getDate() + "/" + String(Number(date.getMonth()) + 1);
   const dayName = date.toLocaleString("en-US", { weekday: "long" });
   const todos = getTodosForDay(date);
 
   const isToday = date.toLocaleDateString() === new Date().toLocaleDateString();
+
   return (
     <div className="flex flex-col rounded py-5 w-full">
       <div className="flex flex-row gap-5 justify-end relative">
@@ -46,6 +48,7 @@ function DayView({ date }: DayViewProps) {
                 done={todo.done}
                 onChange={(text) => handleChange(todo.id, text)}
                 onClick={() => handleDone(todo.id)}
+                onDelete={() => handleDelete(todo.id)}
               />
             );
           })}
