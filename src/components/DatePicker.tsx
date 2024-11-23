@@ -1,36 +1,25 @@
-import { useContext, useEffect, useState } from "react";
-import { todosContext } from "../storage/TodosContext";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import getWeekdays from "../util/createWeekdays";
 import classNames from "classnames";
-import { useTheme } from "../storage/ThemeContext";
 
-function DatePicker() {
-  const [isThisWeek, setIsThisWeek] = useState(true);
-  const { activeDate, setDateTo } = useContext(todosContext);
-  const { themeColor } = useTheme();
+type DatePickerProps = {
+  themeColor: string;
+  isThisWeek: boolean;
+  startDay: Date;
+  endDay: Date;
+  handleDateChange: (left: boolean) => void;
+  handleSetToday: () => void;
+};
+function DatePicker(props: DatePickerProps) {
+  const {
+    themeColor,
+    isThisWeek,
+    startDay,
+    endDay,
+    handleDateChange,
+    handleSetToday,
+  } = props;
 
-  const weekDays = getWeekdays(activeDate);
-  const startDay = weekDays[0];
-  const endDay = weekDays[weekDays.length - 1];
-  function handleDateChange(forward: boolean) {
-    const direction = forward ? [7] : [-7];
-    // move date by 7 days forward or backward
-    const newDate = new Date(activeDate);
-    newDate.setDate(newDate.getDate() + direction[0]);
-
-    setDateTo(newDate);
-  }
-
-  function handleSetToday() {
-    setDateTo(new Date());
-  }
-
-  useEffect(() => {
-    const today = new Date();
-    setIsThisWeek(today >= startDay && today <= endDay);
-  }, [activeDate, startDay, endDay]);
-
+  console.log("REnder");
   const jumpButtonClasses = classNames(
     "transition text-sm duration-200 ease-in-out z-20",
     {

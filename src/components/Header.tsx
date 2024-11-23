@@ -1,10 +1,10 @@
 import { useTheme } from "../storage/ThemeContext";
-import DatePicker from "./DatePicker";
+
+import DatePickerContainer from "./DatePickerContainer";
 import NavMenu from "./NavMenu";
 
 function Header() {
   const { themeColor } = useTheme();
-
   return (
     <>
       <header className="mt-6 mb-10 flex-row ">
@@ -21,7 +21,7 @@ function Header() {
         <NavMenu />
       </header>
       <div className="flex justify-center mt-1 mb-4">
-        <DatePicker />
+        <DatePickerContainer />
       </div>
     </>
   );
