@@ -1,7 +1,7 @@
 import { TodosType } from "../types/Todos.types.ts";
 async function getTodosForWeek(date: Date): Promise<TodosType[]>  { 
   const isoDate = new Date(date).toISOString();
-  console.log("FETCHING TODOS FOR WEEK", isoDate);
+  console.log("FETCHING ALL TODOS FOR WEEK", isoDate);
   const response = await fetch(`http://localhost:3000/todos/week/${isoDate}`);
   const data = await response.json(); 
   return data;

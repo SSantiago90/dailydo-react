@@ -19,7 +19,6 @@ function DatePicker(props: DatePickerProps) {
     handleSetToday,
   } = props;
 
-  console.log("REnder");
   const jumpButtonClasses = classNames(
     "transition text-sm duration-200 ease-in-out z-20",
     {
