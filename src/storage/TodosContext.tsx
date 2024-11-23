@@ -42,10 +42,10 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
 
   // Fetch data
   useEffect(() => {
-    setFetching(true);
-    const week = getWeekdays(activeDate);
-
+    log("rendering and fetching data");
     const fetchData = async () => {
+      setFetching(true);
+      const week = getWeekdays(activeDate);
       // * get all todos for this week 7 days ------------------------
       const weeklyTodos = await getTodosForWeek(activeDate);
 
@@ -61,25 +61,30 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       });
 
       // * get permanent notes todos ------------------------
-      const notesTodos = await getAllNotes();
-      // add an empty "todo" for everyday
-      const positions = [1, 2, 3];
-      positions.forEach((position) => {
-        notesTodos.push({
-          date: new Date(),
-          id: crypto.randomUUID(),
-          task: "",
-          done: false,
-          isNote: position as 1 | 2 | 3,
+      // only fetch notes if there aren't loaded yet
+      if (notes.length > 0) return { todos: weeklyTodos, notes };
+      else {
+        log("fetching notes");
+        const notesTodos = await getAllNotes();
+        // add an empty "todo" for everyday
+        const positions = [1, 2, 3];
+        positions.forEach((position) => {
+          notesTodos.push({
+            date: new Date(),
+            id: crypto.randomUUID(),
+            task: "",
+            done: false,
+            isNote: position as 1 | 2 | 3,
+          });
         });
-      });
 
-      // convert ISOString from DB to Date() js object
-      notesTodos.forEach((todo) => {
-        todo.date = new Date(todo.date);
-      });
+        // convert ISOString from DB to Date() js object
+        notesTodos.forEach((todo) => {
+          todo.date = new Date(todo.date);
+        });
 
-      return { todos: weeklyTodos, notes: notesTodos };
+        return { todos: weeklyTodos, notes: notesTodos };
+      }
     };
 
     fetchData()
@@ -116,8 +121,6 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     if (!todoEdited) return false;
 
     const dateString = normalizeDate(todoEdited.date);
-
-    log(todoEdited);
 
     if (todoEdited.isNote === 0) {
       const todosForDay = todos.filter(
@@ -185,8 +188,13 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const deleteTodo = (id: string) => {
-    const newTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(newTodos);
+    const isNote = [...todos, ...notes].find((todo) => todo.id === id)?.isNote;
+
+    if (isNote) {
+      setNotes(notes.filter((todo) => todo.id !== id));
+    } else {
+      setTodos(todos.filter((todo) => todo.id !== id));
+    }
   };
 
   return (

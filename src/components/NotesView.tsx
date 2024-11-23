@@ -7,7 +7,6 @@ type NotesViewProps = {
   notesList: TodosType[][];
   handleChange: (id: string, text: string) => void;
   handleDone: (id: string) => void;
-  handleNewNote: (position: 1 | 2 | 3) => void;
 };
 function NotesView({ notesList, handleChange, handleDone }: NotesViewProps) {
   const { themeColor } = useTheme();

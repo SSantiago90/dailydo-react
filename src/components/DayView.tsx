@@ -10,8 +10,7 @@ type DayViewProps = {
 
 function DayView({ date }: DayViewProps) {
   const { themeColor } = useTheme();
-  const { getTodosForDay, handleChange, handleDone, handleNewTodo } =
-    useContext(todosContext);
+  const { getTodosForDay, handleChange, handleDone } = useContext(todosContext);
 
   const day = date.getDate() + "/" + String(Number(date.getMonth()) + 1);
   const dayName = date.toLocaleString("en-US", { weekday: "long" });
