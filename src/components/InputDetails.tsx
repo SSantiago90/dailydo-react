@@ -44,15 +44,7 @@ export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
     <Modal
       colorClassName={`text-${themeColor}-700`}
       isOpen={isOpen}
-      onClose={() => {
-        document.body.style.overflow = "";
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            onClose();
-            resolve(null);
-          }, 300);
-        });
-      }}
+      onClose={onClose}
       onDelete={onDelete}
     >
       {!todo ? (
@@ -77,9 +69,7 @@ export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
           <HBar />
           <div className="flex flex-row gap-5 justify-around">
             <button
-              onClick={() => {
-                document.body.style.overflow = "hidden";
-              }}
+              onClick={onClose}
               className={`text-slate-500 hover:text-green-500 py-2 px-4 rounded-lg border-slate-500 border-1`}
             >
               Save
@@ -124,9 +114,12 @@ function Modal({
       {isOpen && (
         <div className={classesModal}>
           <motion.div
+            key="modal"
             className={classesModalContainer}
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
           >
             <div className="absolute top-0 right-0 p-3 flex flex-row gap-2">
               {onDelete && (

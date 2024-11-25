@@ -81,7 +81,7 @@ function WeekDayTitle({
         key={monthName}
         initial={{ y: "-40%", opacity: 0 }}
         animate={{ y: "0%", opacity: 0.5 }}
-        exit={{ y: "40%", opacity: 0 }} // Animation when the element exits
+        exit={{ y: "40%", opacity: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         className={`text-9xl _text-gradient font-black absolute -bottom-5 z-0 text-${themeColor}-700`}
       >

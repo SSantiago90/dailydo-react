@@ -24,10 +24,10 @@ function DayView({ date }: DayViewProps) {
     <AnimatePresence mode="wait">
       <motion.div
         key={date.toISOString()} // Unique key ensures animations trigger on date change
-        initial={{ scaleY: 0, transformOrigin: "top" }}
+        /*    initial={{ scaleY: 0, transformOrigin: "top" }}
         animate={{ scaleY: 1 }}
         exit={{ scaleY: 0 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
+        transition={{ duration: 0.2, ease: "easeOut" }} */
         className="flex flex-col rounded py-5 w-full origin-top"
       >
         <div className="flex flex-row gap-5 justify-end relative">

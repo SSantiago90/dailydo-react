@@ -3,7 +3,7 @@ import { CircleCheck, Pencil } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 import { useTheme } from "../storage/ThemeContext";
 import TodoDetails from "./InputDetails";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 type InputTodoProps = {
   value: string;
@@ -106,15 +106,22 @@ function InputTodo({
         transition={{ duration: 0.45 }}
       />
 
-      {isOpen && (
-        <TodoDetails
-          onDelete={onDelete}
-          onDone={onClick}
-          isOpen={isOpen}
-          onClose={closeModal}
-          id={id}
-        />
-      )}
+      <AnimatePresence mode="wait">
+        {isOpen && (
+          <TodoDetails
+            onDelete={() => {
+              closeModal();
+              setTimeout(() => {
+                onDelete();
+              }, 150);
+            }}
+            onDone={onClick}
+            isOpen={isOpen}
+            onClose={closeModal}
+            id={id}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }
