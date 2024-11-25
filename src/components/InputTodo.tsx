@@ -3,6 +3,7 @@ import { CircleCheck, Pencil } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 import { useTheme } from "../storage/ThemeContext";
 import TodoDetails from "./InputDetails";
+import { motion } from "framer-motion";
 
 type InputTodoProps = {
   value: string;
@@ -98,7 +99,13 @@ function InputTodo({
           </>
         )}
       </li>
-      <hr className={classesHr} />
+      <motion.hr
+        className={classesHr}
+        initial={{ width: value !== "" ? "100%" : 0 }}
+        animate={{ width: "100%" }}
+        transition={{ duration: 0.45 }}
+      />
+
       {isOpen && (
         <TodoDetails
           onDelete={onDelete}
@@ -112,13 +119,6 @@ function InputTodo({
   );
 }
 
-/**
- * This renders when the value of the todo changes or the id of the todo changes.
- * It's memoized so that it doesn't re-render unnecessarily.
- * This is important because the children of the InputTodo component are memoized
- * as well, so if the InputTodo component re-renders, the children will also re-render.
- * This can cause performance issues if the InputTodo component is re-rendered frequently.
- */
 export default memo(InputTodo, (prevProps, nextProps) => {
   return (
     prevProps.done === nextProps.done &&

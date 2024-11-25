@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { TodosType } from "../types/Todos.types";
 import HBar from "./UI/HBar";
 import InputTodo from "./InputTodo";
+import { motion } from "framer-motion";
 
 type TodoDetailsProps = {
   isOpen: boolean;
@@ -31,7 +32,7 @@ export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
   useEffect(() => {
     const initialTodo = getSingleTodo(id) as TodosType | null;
     initialTodoRef.current = initialTodo?.task || "";
-  }, [id]);
+  }, [id, getSingleTodo]);
 
   const handleDiscard = () => {
     if (!todo) return;
@@ -43,7 +44,15 @@ export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
     <Modal
       colorClassName={`text-${themeColor}-700`}
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => {
+        document.body.style.overflow = "";
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            onClose();
+            resolve(null);
+          }, 300);
+        });
+      }}
       onDelete={onDelete}
     >
       {!todo ? (
@@ -68,7 +77,9 @@ export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
           <HBar />
           <div className="flex flex-row gap-5 justify-around">
             <button
-              onClick={onClose}
+              onClick={() => {
+                document.body.style.overflow = "hidden";
+              }}
               className={`text-slate-500 hover:text-green-500 py-2 px-4 rounded-lg border-slate-500 border-1`}
             >
               Save
@@ -112,7 +123,11 @@ function Modal({
     <>
       {isOpen && (
         <div className={classesModal}>
-          <div className={classesModalContainer}>
+          <motion.div
+            className={classesModalContainer}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
             <div className="absolute top-0 right-0 p-3 flex flex-row gap-2">
               {onDelete && (
                 <button onClick={onDelete}>
@@ -133,7 +148,7 @@ function Modal({
             </div>
             <HBar />
             <div className="py-5 px-2">{children}</div>
-          </div>
+          </motion.div>
         </div>
       )}
     </>

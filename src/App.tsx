@@ -8,15 +8,20 @@ import NotesContainer from "./components/NotesContainer.tsx";
 function App() {
   return (
     <>
-      <ThemeProvider>
-        <TodosProvider>
-          <Header />
-          <HBar bold />
-          <WeekContainer />
-          <></>
-          <NotesContainer />
-        </TodosProvider>
-      </ThemeProvider>
+      <div className="background">
+        <div className="background_layer"></div>
+      </div>
+      <main>
+        <ThemeProvider>
+          <TodosProvider>
+            <Header />
+            <HBar bold />
+            <WeekContainer />
+            <></>
+            <NotesContainer />
+          </TodosProvider>
+        </ThemeProvider>
+      </main>
     </>
   );
 }

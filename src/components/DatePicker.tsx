@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import classNames from "classnames";
+import { motion, AnimatePresence } from "motion/react";
 
 type DatePickerProps = {
   themeColor: string;
@@ -31,11 +32,8 @@ function DatePicker(props: DatePickerProps) {
 
   return (
     <div className="flex flex-col items-center gap-2 relative">
-      <h4
-        className={`text-9xl _text-gradient font-black opacity-20 text-${themeColor}-700 absolute -bottom-5 z-0`}
-      >
-        week
-      </h4>
+      <WeekDayTitle date={startDay} themeColor={themeColor} />
+
       <div className="flex items-center space-x-2 z-10">
         <div className="flex items-center space-x-8">
           <button
@@ -68,4 +66,28 @@ function DatePicker(props: DatePickerProps) {
   );
 }
 
+function WeekDayTitle({
+  date,
+  themeColor,
+}: {
+  date: Date;
+  themeColor: string;
+}) {
+  const monthName = date.toLocaleString("default", { month: "long" });
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.h4
+        key={monthName}
+        initial={{ y: "-40%", opacity: 0 }}
+        animate={{ y: "0%", opacity: 0.5 }}
+        exit={{ y: "40%", opacity: 0 }} // Animation when the element exits
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className={`text-9xl _text-gradient font-black absolute -bottom-5 z-0 text-${themeColor}-700`}
+      >
+        {monthName}
+      </motion.h4>
+    </AnimatePresence>
+  );
+}
 export default DatePicker;
