@@ -10,6 +10,7 @@ import { TodosType } from "../types/Todos.types";
 import { getTodosForWeek, getAllNotes } from "../services/todosApi";
 import getWeekdays from "../util/createWeekdays";
 import normalizeDate from "../util/normalizeDate";
+import { useDebounce } from "@uidotdev/usehooks";
 
 type TodosContextType = {
   todos: TodosType[];
@@ -22,6 +23,7 @@ type TodosContextType = {
   getTodosForDay: (date: Date) => TodosType[];
   setDateTo: (date: Date) => void;
   getSingleTodo: (id: string) => TodosType | undefined;
+  updateTodos: (todos: TodosType[]) => void;
 };
 
 export const todosContext = createContext<TodosContextType>(
@@ -36,8 +38,9 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const [todos, setTodos] = useState<TodosType[]>([]);
   const [notes, setNotes] = useState<TodosType[]>([]);
   const [fetching, setFetching] = useState(true);
-
   const [activeDate, setActiveDate] = useState(new Date());
+  const debouncedTodos = useDebounce(todos, 2000);
+  const debouncedNotes = useDebounce(notes, 2000);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -213,6 +216,18 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     setNotes((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
   }, []);
 
+  const updateTodos = () => {
+    log("saving todos");
+  };
+
+  useEffect(() => {
+    updateTodos();
+  }, [debouncedTodos]);
+
+  useEffect(() => {
+    updateTodos();
+  }, [debouncedNotes]);
+
   return (
     <todosContext.Provider
       value={{
@@ -226,6 +241,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         getSingleTodo,
         handleDelete,
         notes,
+        updateTodos,
       }}
     >
       {children}

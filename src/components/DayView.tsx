@@ -22,7 +22,7 @@ function DayView({ date }: DayViewProps) {
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div className="flex flex-col rounded py-5 w-full origin-top min-h-[35vh]">
+      <motion.div className="flex flex-col rounded py-5 w-full origin-top">
         <div className="flex flex-row gap-5 justify-end relative">
           <h3
             className={`${

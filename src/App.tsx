@@ -6,6 +6,8 @@ import { ThemeProvider } from "./storage/ThemeContext.tsx";
 import NotesContainer from "./components/NotesContainer.tsx";
 import { useState } from "react";
 
+// TODO: "cache" in context with next/prev week
+// TODO2: Save in database changes in context
 function App() {
   const [refetch, setRefetch] = useState(true);
 
