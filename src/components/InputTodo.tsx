@@ -71,7 +71,7 @@ function InputTodo({
   return (
     <>
       <li className="flex-1 w-full flex items-center">
-        <input
+        <motion.input
           autoFocus={!controls}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
@@ -79,6 +79,9 @@ function InputTodo({
           className={classesInput}
           type="text"
           value={valueInput}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
         />
         {value !== "" && controls && (
           <>
@@ -101,9 +104,9 @@ function InputTodo({
       </li>
       <motion.hr
         className={classesHr}
-        initial={{ width: value !== "" ? "100%" : 0 }}
+        initial={{ width: "0%" }}
         animate={{ width: "100%" }}
-        transition={{ duration: 0.45 }}
+        transition={{ duration: 0.55, ease: "easeOut" }}
       />
 
       <AnimatePresence mode="wait">

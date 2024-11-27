@@ -9,18 +9,12 @@ type WeekViewProps = {
 
 function WeekView({ weekDays, fetching, back = false }: WeekViewProps) {
   const animX = back ? -120 : 120;
-  /* if (fetching)
-    return (
-      <div className="min-h-[40vh] flex items-center justify-center">
-        <Loader />
-      </div>
-    ); */
 
   return (
     <section className="relative min-h-[40vh]">
       {fetching && (
-        <div className="flex absolute  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 items-center justify-center">
-          <Loader className=" " />
+        <div className="flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 items-center justify-center">
+          <Loader delay={100} />
         </div>
       )}
       <AnimatePresence mode="wait">
@@ -29,9 +23,8 @@ function WeekView({ weekDays, fetching, back = false }: WeekViewProps) {
           initial={{ x: animX, opacity: 0.25 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{
-            x: -1 * (animX + 50),
             opacity: 0.0,
-            transition: { duration: 0.2 },
+            transition: { duration: 0.175, ease: "easeIn" },
           }}
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
