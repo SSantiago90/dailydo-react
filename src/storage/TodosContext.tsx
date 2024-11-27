@@ -39,15 +39,27 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const [notes, setNotes] = useState<TodosType[]>([]);
   const [fetching, setFetching] = useState(true);
   const [activeDate, setActiveDate] = useState(new Date());
+  const [cachedDates, setCachedDates] = useState<Date[]>([]);
   const debouncedTodos = useDebounce(todos, 2000);
   const debouncedNotes = useDebounce(notes, 2000);
 
+  const isCachedDate = (date: Date) =>
+    cachedDates.some(
+      (cachedDate) => normalizeDate(cachedDate) === normalizeDate(date)
+    );
+
   useEffect(() => {
     const fetchData = async () => {
-      setFetching(true);
-      const week = getWeekdays(activeDate);
+      // if todo-data is not cached, start fetching new data
 
-      // * get all todos for this week 7 days ------------------------
+      setFetching(true);
+
+      // get all day-dates for this week's days
+      const week = getWeekdays(activeDate);
+      // cache all day-dates for this week
+      setCachedDates((prevState) => [...prevState, ...week]);
+
+      // * get all todos for this week 7 days ---------------------------------
       const weeklyTodos = await getTodosForWeek(activeDate);
 
       // add an empty "todo" for everyday
@@ -61,7 +73,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         });
       });
 
-      // * get permanent notes todos ------------------------
+      // * get permanent notes todos ---------------------------------
       // only fetch notes if there aren't loaded yet
       if (notes.length > 0) return { todos: weeklyTodos, notes };
       else {
@@ -87,16 +99,18 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    fetchData()
-      .then(({ todos, notes }) => {
-        setTodos(todos);
-        setNotes(notes);
-      })
-      .catch((error) =>
-        console.error("%c Error fetching data:", "color: red", error)
-      )
-      .finally(() => setFetching(false));
-    // notes are fetched only once
+    if (!isCachedDate(activeDate)) {
+      fetchData()
+        .then(({ todos, notes }) => {
+          setTodos((prevTodos) => [...prevTodos, ...todos]);
+          setNotes(notes);
+        })
+        .catch((error) =>
+          console.error("%c Error fetching data:", "color: red", error)
+        )
+        .finally(() => setFetching(false));
+    }
+    // eslint-note notes are fetched only once
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeDate]);
 

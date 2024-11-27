@@ -17,6 +17,7 @@ function App() {
   }
 
   function handleRefetch() {
+    console.clear();
     setTimeout(() => {
       setRefetch(true);
     }, 10);
