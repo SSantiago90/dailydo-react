@@ -13,7 +13,7 @@ function ThemePicker() {
     setColor(color);
   }
 
-  const colors = ["rose", "blue", "green", "violet", "teal", "yellow"];
+  const colors = ["rose", "blue", "green", "violet", "orange", "yellow"];
 
   const customPopover: CustomFlowbiteTheme["popover"] = {
     base: "absolute z-20 inline-block w-max max-w-[100vw] bg-black bg-opacity-40 outline-none rounded-lg  dark:border-gray-600 dark:bg-gray-800",

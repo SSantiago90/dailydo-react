@@ -7,7 +7,8 @@ type TodosType = {
   id: string,
   task: string,
   done: boolean,
-  isNote?: 0 | 1 | 2 | 3
+  isNote?: 0 | 1 | 2 | 3,
+  isModified?: boolean
 };
 
 export type { DaylistType, TodosType };

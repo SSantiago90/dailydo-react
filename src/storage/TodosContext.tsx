@@ -7,10 +7,16 @@ import {
   useCallback,
 } from "react";
 import { TodosType } from "../types/Todos.types";
-import { getTodosForWeek, getAllNotes } from "../services/todosApi";
+import {
+  getTodosForWeek,
+  getAllNotes,
+  updateTodo,
+  createTodo,
+} from "../services/todosApi";
 import getWeekdays from "../util/createWeekdays";
 import normalizeDate from "../util/normalizeDate";
 import { useDebounce } from "@uidotdev/usehooks";
+import newLogger from "../util/log";
 
 type TodosContextType = {
   todos: TodosType[];
@@ -23,16 +29,13 @@ type TodosContextType = {
   getTodosForDay: (date: Date) => TodosType[];
   setDateTo: (date: Date) => void;
   getSingleTodo: (id: string) => TodosType | undefined;
-  updateTodos: (todos: TodosType[]) => void;
 };
 
 export const todosContext = createContext<TodosContextType>(
   {} as TodosContextType
 );
 
-function log(text: unknown) {
-  console.log("%c [Context] ", "color: rgb(0, 255, 150);", text);
-}
+const log = newLogger("TodosContext");
 
 export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const [todos, setTodos] = useState<TodosType[]>([]);
@@ -40,9 +43,9 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const [fetching, setFetching] = useState(true);
   const [activeDate, setActiveDate] = useState(new Date());
   const [cachedDates, setCachedDates] = useState<Date[]>([]);
+
   const debouncedTodos = useDebounce(todos, 2000);
   const debouncedNotes = useDebounce(notes, 2000);
-
   const isCachedDate = (date: Date) =>
     cachedDates.some(
       (cachedDate) => normalizeDate(cachedDate) === normalizeDate(date)
@@ -65,7 +68,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       // add an empty "todo" for everyday
       week.forEach((day) => {
         weeklyTodos.push({
-          id: crypto.randomUUID(),
+          id: crypto.randomUUID().slice(0, 6),
           task: "",
           done: false,
           date: day,
@@ -83,7 +86,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         positions.forEach((position) => {
           notesTodos.push({
             date: new Date(),
-            id: crypto.randomUUID(),
+            id: crypto.randomUUID().slice(0, 6),
             task: "",
             done: false,
             isNote: position as 1 | 2 | 3,
@@ -156,14 +159,14 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       const modifiedTodos = prevTodos.map((todo) => {
         if (!todoEdited) return todo;
         if (todo.id === id) {
-          return { ...todo, task: text };
+          return { ...todo, task: text, isModified: true };
         }
         return todo;
       });
 
       if (isLastElement) {
         modifiedTodos.push({
-          id: crypto.randomUUID(),
+          id: crypto.randomUUID().slice(0, 6),
           date: todoEdited.date,
           task: "",
           done: false,
@@ -230,17 +233,32 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     setNotes((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
   }, []);
 
-  const updateTodos = () => {
-    log("saving todos");
-  };
-
   useEffect(() => {
+    const updateTodos = async () => {
+      const modifiedTodos = debouncedTodos.filter((todo) => todo.isModified);
+      if (modifiedTodos.length === 0) return;
+
+      for (const todo of modifiedTodos) {
+        // front-end-only todos
+        if (todo.id.length <= 6) {
+          if (todo.task !== "") {
+            await createTodo(todo);
+            log("Created Todo:", todo.task);
+          }
+        }
+        // database todos
+        else {
+          const response = await updateTodo(todo);
+          log("Updated Todo:", response.message);
+        }
+      }
+    };
     updateTodos();
   }, [debouncedTodos]);
 
-  useEffect(() => {
+  /*  useEffect(() => {
     updateTodos();
-  }, [debouncedNotes]);
+  }, [debouncedNotes]); */
 
   return (
     <todosContext.Provider
@@ -255,7 +273,6 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         getSingleTodo,
         handleDelete,
         notes,
-        updateTodos,
       }}
     >
       {children}
