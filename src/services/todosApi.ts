@@ -1,7 +1,7 @@
 
 import { TodosType } from "../types/Todos.types.ts";
 import newLogger  from "../util/log.ts";
-const log = newLogger("Todo-APIservice");
+const log = newLogger("API-Todo Service");
 
 async function getTodosForWeek(date: Date): Promise<TodosType[]>  { 
   const isoDate = new Date(date).toISOString();

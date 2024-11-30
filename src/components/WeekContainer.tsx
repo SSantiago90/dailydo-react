@@ -5,7 +5,7 @@ import WeekView from "./WeekView.js";
 
 function WeekContainer() {
   const [weekDays, setWeekDays] = useState<Date[]>([]);
-  const { activeDate, fetching } = useContext(todosContext);
+  const { activeDate, errors, fetching } = useContext(todosContext);
   const [backward, setBackward] = useState(false);
 
   useEffect(() => {
@@ -14,7 +14,14 @@ function WeekContainer() {
     setWeekDays(weekdaysDates);
   }, [activeDate]);
 
-  return <WeekView fetching={fetching} weekDays={weekDays} back={backward} />;
+  return (
+    <WeekView
+      fetching={fetching}
+      weekDays={weekDays}
+      back={backward}
+      errors={errors}
+    />
+  );
 }
 
 export default WeekContainer;

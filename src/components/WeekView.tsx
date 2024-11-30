@@ -5,9 +5,10 @@ type WeekViewProps = {
   weekDays: Date[];
   fetching: boolean;
   back?: boolean;
+  errors: Error;
 };
 
-function WeekView({ weekDays, fetching, back = false }: WeekViewProps) {
+function WeekView({ weekDays, fetching, back = false, errors }: WeekViewProps) {
   const animX = back ? -120 : 120;
 
   return (
@@ -17,28 +18,45 @@ function WeekView({ weekDays, fetching, back = false }: WeekViewProps) {
           <Loader delay={100} />
         </div>
       )}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={weekDays.toString()}
-          initial={{ x: animX, opacity: 0.25 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{
-            opacity: 0.0,
-            transition: { duration: 0.175, ease: "easeIn" },
-          }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
-        >
-          <div
-            id="listcontainer"
-            className="flex flex-col xl:flex-row items-center xl:items-baseline gap-6 justify-center mx-auto my-2 p-8"
-          >
-            {weekDays.length &&
-              weekDays.map((daylist: Date) => (
-                <DayView date={daylist} key={daylist.toString()} />
-              ))}
+      {errors ? (
+        <div className="flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 items-center justify-center">
+          <div className="flex flex-col items-center justify-center gap-2">
+            <h1 className="text-4xl font-bold">
+              Sorry! Something went wrong 😥
+            </h1>
+            <p className="text-red-600">{errors.message}</p>
+            <button
+              className="text-slate-500"
+              onClick={() => window.location.reload()}
+            >
+              Refresh
+            </button>
           </div>
-        </motion.div>
-      </AnimatePresence>
+        </div>
+      ) : (
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={weekDays.toString()}
+            initial={{ x: animX, opacity: 0.25 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{
+              opacity: 0.0,
+              transition: { duration: 0.175, ease: "easeIn" },
+            }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+          >
+            <div
+              id="listcontainer"
+              className="flex flex-col xl:flex-row items-center xl:items-baseline gap-6 justify-center mx-auto my-2 p-8"
+            >
+              {weekDays.length &&
+                weekDays.map((daylist: Date) => (
+                  <DayView date={daylist} key={daylist.toString()} />
+                ))}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      )}
     </section>
   );
 }

@@ -33,16 +33,26 @@ function App() {
 
   return (
     <>
-      <div className="flex gap-4 items-center justify-center">
-        <button onClick={handleReset}>Press reset</button>
-        <button onClick={handleResetDB}>Reset Database</button>
-      </div>
       {refetch && (
         <>
           <div className="background">
             <div className="background_layer"></div>
           </div>
           <main>
+            <div className="flex gap-4 items-center justify-center">
+              <button
+                className="hover:opacity-100 opacity-15"
+                onClick={handleReset}
+              >
+                Press reset
+              </button>
+              <button
+                className="hover:opacity-100 opacity-15"
+                onClick={handleResetDB}
+              >
+                Reset Database
+              </button>
+            </div>
             <ThemeProvider>
               <TodosProvider>
                 <Header />

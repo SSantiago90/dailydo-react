@@ -28,7 +28,11 @@ function generateColor(inputString: string) {
 
 export default function newLogger(message: string) {  
   return function log(...args: unknown[]) {
-    if (args.length === 1) return args[0];
+    if (args.length === 1)
+      {
+        console.log(`%c [${message}] `, generateColor(message), args[0]);
+        return args[0];
+      } 
     
     const fulltext = args.map((arg) => {
       if (arg instanceof Date) return arg.toISOString();

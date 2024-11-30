@@ -51,12 +51,10 @@ function ThemePicker() {
             className="flex flex-row gap-1 items-center"
             onClick={() => setIsOpen(!isOpen)}
           >
-            Theme
-            <Palette
-              size={14}
-              onClick={() => setIsOpen(!isOpen)}
-              className=""
-            />
+            <Palette size={14} onClick={() => setIsOpen(!isOpen)} />
+            <div style={{ fontSize: "1px" }} className="opacity-0">
+              .
+            </div>
           </button>
         </Popover>
       </div>

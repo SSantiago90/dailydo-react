@@ -23,6 +23,7 @@ type TodosContextType = {
   notes: TodosType[];
   activeDate: Date;
   fetching: boolean;
+  errors: Error;
   handleDone: (id: string) => void;
   handleChange: (id: string, text: string) => void;
   handleDelete: (id: string) => void;
@@ -43,18 +44,45 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const [fetching, setFetching] = useState(true);
   const [activeDate, setActiveDate] = useState(new Date());
   const [cachedDates, setCachedDates] = useState<Date[]>([]);
+  const [errors, setErrors] = useState<Error | null>(null);
 
   const debouncedTodos = useDebounce(todos, 2000);
   const debouncedNotes = useDebounce(notes, 2000);
+
   const isCachedDate = (date: Date) =>
     cachedDates.some(
       (cachedDate) => normalizeDate(cachedDate) === normalizeDate(date)
     );
 
+  const handleDone = useCallback((todoId: string) => {
+    setTodos((prevTodos) => {
+      const doneTodo = prevTodos.find((todo) => todo.id === todoId);
+      if (doneTodo?.isNote) return prevTodos;
+
+      return prevTodos.map((todo) => {
+        if (todo.id === todoId) {
+          return { ...todo, done: !todo.done };
+        }
+        return todo;
+      });
+    });
+
+    setNotes((prevNotes) => {
+      const doneTodo = prevNotes.find((todo) => todo.id === todoId);
+      if (!doneTodo?.isNote) return prevNotes;
+
+      return prevNotes.map((todo) => {
+        if (todo.id === todoId) {
+          return { ...todo, done: !todo.done };
+        }
+        return todo;
+      });
+    });
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       // if todo-data is not cached, start fetching new data
-
       setFetching(true);
 
       // get all day-dates for this week's days
@@ -108,40 +136,21 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
           setTodos((prevTodos) => [...prevTodos, ...todos]);
           setNotes(notes);
         })
-        .catch((error) =>
-          console.error("%c Error fetching data:", "color: red", error)
-        )
+        .catch((err) => {
+          if (err.message.includes("Network")) {
+            setErrors(
+              new Error(
+                "Network Error: couldn't connect to server. Make sure your internet connection is working or try again later."
+              )
+            );
+          }
+          console.error("%c Error fetching data:", "color: red", err);
+        })
         .finally(() => setFetching(false));
     }
     // eslint-note notes are fetched only once
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeDate]);
-
-  const handleDone = useCallback((todoId: string) => {
-    setTodos((prevTodos) => {
-      const doneTodo = prevTodos.find((todo) => todo.id === todoId);
-      if (doneTodo?.isNote) return prevTodos;
-
-      return prevTodos.map((todo) => {
-        if (todo.id === todoId) {
-          return { ...todo, done: !todo.done };
-        }
-        return todo;
-      });
-    });
-
-    setTodos((prevTodos) => {
-      const doneTodo = prevTodos.find((todo) => todo.id === todoId);
-      if (!doneTodo?.isNote) return prevTodos;
-
-      return prevTodos.map((todo) => {
-        if (todo.id === todoId) {
-          return { ...todo, done: !todo.done };
-        }
-        return todo;
-      });
-    });
-  }, []);
 
   const handleChange = useCallback((id: string, text: string) => {
     setTodos((prevTodos) => {
@@ -192,7 +201,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       const modifiedTodos = prevTodos.map((todo) => {
         if (!todoEdited) return todo;
         if (todo.id === id) {
-          return { ...todo, task: text };
+          return { ...todo, task: text, isModified: true };
         }
         return todo;
       });
@@ -250,11 +259,41 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         else {
           const response = await updateTodo(todo);
           log("Updated Todo:", response.message);
+          setTodos((prevTodos) => [
+            ...prevTodos,
+            { ...todo, isModified: false },
+          ]);
         }
       }
     };
     updateTodos();
   }, [debouncedTodos]);
+
+  useEffect(() => {
+    (async () => {
+      const modifiedTodos = debouncedNotes.filter((todo) => todo.isModified);
+      if (modifiedTodos.length === 0) return;
+
+      for (const todo of modifiedTodos) {
+        // front-end-only todos
+        if (todo.id.length <= 6) {
+          if (todo.task !== "") {
+            await createTodo(todo);
+            log("Created Todo:", todo.task);
+          }
+        }
+        // database todos
+        else {
+          const response = await updateTodo(todo);
+          log("Updated Note:", response.message);
+          setNotes((prevTodos) => [
+            ...prevTodos,
+            { ...todo, isModified: false },
+          ]);
+        }
+      }
+    })();
+  }, [debouncedNotes]);
 
   /*  useEffect(() => {
     updateTodos();
@@ -273,6 +312,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         getSingleTodo,
         handleDelete,
         notes,
+        errors,
       }}
     >
       {children}
