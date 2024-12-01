@@ -31,7 +31,7 @@ function DatePicker(props: DatePickerProps) {
   );
 
   return (
-    <div className="flex flex-col items-center gap-2 relative">
+    <div className="flex flex-col items-center relative ">
       <WeekDayTitle date={startDay} themeColor={themeColor} />
 
       <div className="flex items-center space-x-2 z-10">
@@ -42,7 +42,7 @@ function DatePicker(props: DatePickerProps) {
           >
             <ChevronLeft size={28} strokeWidth={4} />
           </button>
-          <span className="text-xl">
+          <span className="text-xl text-slate-100">
             {startDay.toLocaleDateString()}{" "}
             <span className="text-slate-400 text-md mx-2">to</span>{" "}
             {endDay.toLocaleDateString()}
@@ -83,7 +83,7 @@ function WeekDayTitle({
         animate={{ y: "0%", opacity: 0.5 }}
         exit={{ y: "40%", opacity: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className={`text-9xl _text-gradient font-black absolute -bottom-5 z-0 text-${themeColor}-700`}
+        className={`xl:text-9xl md:text-8xl sm:text-8xl text-7xl _text-gradient font-black absolute xl:-bottom-6 md:-bottom-2 sm-bottom-2 bottom-7 z-0 text-${themeColor}-700`}
       >
         {monthName}
       </motion.h4>

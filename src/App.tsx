@@ -6,7 +6,7 @@ import { ThemeProvider } from "./storage/ThemeContext.tsx";
 import NotesContainer from "./components/NotesContainer.tsx";
 import { useState } from "react";
 
-// TODO2: Save in database changes in context
+
 function App() {
   const [refetch, setRefetch] = useState(true);
 
@@ -39,7 +39,10 @@ function App() {
             <div className="background_layer"></div>
           </div>
           <main>
-            <div className="flex gap-4 items-center justify-center">
+            <div
+              style={{ display: "" }}
+              className="flex gap-4 items-center justify-center"
+            >
               <button
                 className="hover:opacity-100 opacity-15"
                 onClick={handleReset}

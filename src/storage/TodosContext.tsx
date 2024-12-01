@@ -23,7 +23,7 @@ type TodosContextType = {
   notes: TodosType[];
   activeDate: Date;
   fetching: boolean;
-  errors: Error;
+  errors: Error | null;
   handleDone: (id: string) => void;
   handleChange: (id: string, text: string) => void;
   handleDelete: (id: string) => void;
@@ -46,8 +46,8 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const [cachedDates, setCachedDates] = useState<Date[]>([]);
   const [errors, setErrors] = useState<Error | null>(null);
 
-  const debouncedTodos = useDebounce(todos, 2000);
-  const debouncedNotes = useDebounce(notes, 2000);
+  const debouncedTodos = useDebounce(todos, 5000);
+  const debouncedNotes = useDebounce(notes, 5000);
 
   const isCachedDate = (date: Date) =>
     cachedDates.some(
@@ -162,9 +162,8 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       const todosForDay = prevTodos.filter(
         (todo) => normalizeDate(todo.date) === dateString
       );
-      //check last element, if it is, create an empty elementç
+      //check last element, if it is this todo, create an empty element
       const isLastElement = todosForDay[todosForDay.length - 1]?.id === id;
-
       const modifiedTodos = prevTodos.map((todo) => {
         if (!todoEdited) return todo;
         if (todo.id === id) {
@@ -251,18 +250,16 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         // front-end-only todos
         if (todo.id.length <= 6) {
           if (todo.task !== "") {
-            await createTodo(todo);
-            log("Created Todo:", todo.task);
+            const newTodo = await createTodo(todo);
+            // update "front-end" id with just created todo.id from DB
+            todo.id = newTodo.id;
+            log("Created Todo:", todo);
           }
         }
         // database todos
         else {
           const response = await updateTodo(todo);
           log("Updated Todo:", response.message);
-          setTodos((prevTodos) => [
-            ...prevTodos,
-            { ...todo, isModified: false },
-          ]);
         }
       }
     };
@@ -279,25 +276,18 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         if (todo.id.length <= 6) {
           if (todo.task !== "") {
             await createTodo(todo);
-            log("Created Todo:", todo.task);
+            log("Created Note:", todo.task);
           }
         }
         // database todos
         else {
           const response = await updateTodo(todo);
           log("Updated Note:", response.message);
-          setNotes((prevTodos) => [
-            ...prevTodos,
-            { ...todo, isModified: false },
-          ]);
+          /* setNotes((prevTodos) => [...prevTodos, { ...todo }]); */
         }
       }
     })();
   }, [debouncedNotes]);
-
-  /*  useEffect(() => {
-    updateTodos();
-  }, [debouncedNotes]); */
 
   return (
     <todosContext.Provider
