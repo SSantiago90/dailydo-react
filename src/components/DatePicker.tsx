@@ -33,7 +33,6 @@ function DatePicker(props: DatePickerProps) {
   return (
     <div className="flex flex-col items-center relative ">
       <WeekDayTitle date={startDay} themeColor={themeColor} />
-
       <div className="flex items-center space-x-2 z-10">
         <div className="flex items-center space-x-8">
           <button

@@ -45,7 +45,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const [activeDate, setActiveDate] = useState(new Date());
   const [cachedDates, setCachedDates] = useState<Date[]>([]);
   const [errors, setErrors] = useState<Error | null>(null);
-
+  const [updatingTodos, setUpdatingTodos] = useState<string[]>([]);
   const debouncedTodos = useDebounce(todos, 5000);
   const debouncedNotes = useDebounce(notes, 5000);
 
@@ -167,7 +167,8 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       const modifiedTodos = prevTodos.map((todo) => {
         if (!todoEdited) return todo;
         if (todo.id === id) {
-          return { ...todo, task: text, isModified: true };
+          setUpdatingTodos((prevTodos) => [...prevTodos, todoEdited.id]);
+          return { ...todo, task: text };
         }
         return todo;
       });
@@ -200,7 +201,8 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       const modifiedTodos = prevTodos.map((todo) => {
         if (!todoEdited) return todo;
         if (todo.id === id) {
-          return { ...todo, task: text, isModified: true };
+          setUpdatingTodos((prevTodos) => [...prevTodos, todoEdited.id]);
+          return { ...todo, task: text };
         }
         return todo;
       });
@@ -243,7 +245,10 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const updateTodos = async () => {
-      const modifiedTodos = debouncedTodos.filter((todo) => todo.isModified);
+      const modifiedTodos = debouncedTodos.filter((todo) =>
+        updatingTodos.includes(todo.id)
+      );
+
       if (modifiedTodos.length === 0) return;
 
       for (const todo of modifiedTodos) {
