@@ -46,8 +46,8 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const [cachedDates, setCachedDates] = useState<Date[]>([]);
   const [errors, setErrors] = useState<Error | null>(null);
   const [updatingTodos, setUpdatingTodos] = useState<string[]>([]);
-  const debouncedTodos = useDebounce(todos, 5000);
-  const debouncedNotes = useDebounce(notes, 5000);
+  const debouncedTodos = useDebounce(todos, 1500);
+  const debouncedNotes = useDebounce(notes, 1500);
 
   const isCachedDate = (date: Date) =>
     cachedDates.some(
@@ -243,6 +243,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     setNotes((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
   }, []);
 
+  // Update todos in DB everytime  todos state changes - debounced in 2secs
   useEffect(() => {
     const updateTodos = async () => {
       const modifiedTodos = debouncedTodos.filter((todo) =>
@@ -253,7 +254,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
 
       for (const todo of modifiedTodos) {
         // front-end-only todos
-        if (todo.id.length <= 6) {
+        if (todo.id && todo.id.length <= 6) {
           if (todo.task !== "") {
             const newTodo = await createTodo(todo);
             // update "front-end" id with just created todo.id from DB
@@ -264,7 +265,8 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         // database todos
         else {
           const response = await updateTodo(todo);
-          log("Updated Todo:", response.message);
+          log("Updated Todo:", todo.task, response.message);
+          setUpdatingTodos([]);
         }
       }
     };
@@ -272,8 +274,10 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   }, [debouncedTodos]);
 
   useEffect(() => {
-    (async () => {
-      const modifiedTodos = debouncedNotes.filter((todo) => todo.isModified);
+    const updateNotes = async () => {
+      const modifiedTodos = debouncedNotes.filter((todo) =>
+        updatingTodos.includes(todo.id)
+      );
       if (modifiedTodos.length === 0) return;
 
       for (const todo of modifiedTodos) {
@@ -287,11 +291,12 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         // database todos
         else {
           const response = await updateTodo(todo);
-          log("Updated Note:", response.message);
-          /* setNotes((prevTodos) => [...prevTodos, { ...todo }]); */
+          log("Updated Note:", todo.task, response.message);
+          setUpdatingTodos([]);
         }
       }
-    })();
+    };
+    updateNotes();
   }, [debouncedNotes]);
 
   return (
