@@ -58,7 +58,9 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const handleDone = useCallback((todoId: string) => {
     setTodos((prevTodos) => {
       const doneTodo = prevTodos.find((todo) => todo.id === todoId);
-      if (doneTodo?.isNote) return prevTodos;
+      if (!doneTodo || doneTodo.isNote) return prevTodos;
+
+      setUpdatingTodos((prevTodos) => [...prevTodos, doneTodo.id]);
 
       return prevTodos.map((todo) => {
         if (todo.id === todoId) {
@@ -71,6 +73,8 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     setNotes((prevNotes) => {
       const doneTodo = prevNotes.find((todo) => todo.id === todoId);
       if (!doneTodo?.isNote) return prevNotes;
+
+      setUpdatingTodos((prevTodos) => [...prevTodos, doneTodo.id]);
 
       return prevNotes.map((todo) => {
         if (todo.id === todoId) {
