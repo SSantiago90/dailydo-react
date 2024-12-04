@@ -12,6 +12,7 @@ import {
   getAllNotes,
   updateTodo,
   createTodo,
+  deleteTodo,
 } from "../services/todosApi";
 import getWeekdays from "../util/createWeekdays";
 import normalizeDate from "../util/normalizeDate";
@@ -237,9 +238,10 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     setActiveDate(date);
   };
 
-  const handleDelete = useCallback((id: string) => {
+  const handleDelete = useCallback(async (id: string) => {
+    const deleteReq = await deleteTodo(id);
+    console.log(deleteReq);
     setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
-
     setNotes((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
   }, []);
 

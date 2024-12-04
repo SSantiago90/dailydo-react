@@ -28,7 +28,7 @@ async function updateTodo(todo: TodosType) : Promise<{ status: string, message: 
   });
   const data = await response.json();
 
-  return { status: data.status, message: data.message };
+  return { status: data.statusCode, message: data.message };
 }
 
 async function createTodo(todo: TodosType) : Promise<TodosType>  {
@@ -44,4 +44,12 @@ async function createTodo(todo: TodosType) : Promise<TodosType>  {
   return data;
 }
 
-export {getTodosForWeek, getAllNotes, updateTodo, createTodo }
+async function deleteTodo(id: string) : Promise<{ status: string, message: string}>  {
+  const response = await fetch(`http://localhost:3000/todos/${id}`, {
+    method: "DELETE",
+  });
+  const data = await response.json();
+  return { status: data.statusCode, message: data.message };
+}
+
+export {getTodosForWeek, getAllNotes, updateTodo, createTodo, deleteTodo }

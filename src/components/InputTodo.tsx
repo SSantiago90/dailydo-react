@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { CircleCheck, Pencil } from "lucide-react";
-import { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useTheme } from "../storage/ThemeContext";
 import TodoDetails from "./InputDetails";
 import { motion, AnimatePresence } from "framer-motion";
@@ -32,10 +32,10 @@ function InputTodo({
   const { themeColor } = useTheme();
 
   const classesInput = classNames(
-    "bg-transparent text-slate-300 focus:ring-0 focus:border-none border-none click:border-none p-1 pt-2 w-full max-w-full box-border flex outline-none focus-visible:border-none hover:border-none",
+    "bg-transparent text-slate-300 focus:ring-0 focus:border-none xl:text-xs border-none click:border-none p-1 pt-2 w-full max-w-full box-border flex outline-none focus-visible:border-none hover:border-none",
     { "line-through": done },
     { "text-slate-700": done },
-    { "cursor-text": value !== "" }
+    { "hover:cursor-grab": value !== "" }
   );
 
   const classesIcon = classNames(
@@ -60,8 +60,23 @@ function InputTodo({
     }
   };
 
-  const openModal = () => setIsOpen(true);
+  const handleDragStart = (evt: DragEvent) => {
+    evt.dataTransfer?.setData("text", value);
+  };
 
+  const handleDragEnds = () => {
+    const newValue = localStorage.getItem("prevInput");
+    onChange(newValue || "");
+  };
+
+  const handleDragDrop = (evt: React.DragEvent) => {
+    const inputText = evt.dataTransfer.getData("text");
+    localStorage.setItem("prevInput", valueInput);
+    setValue("");
+    onChange(inputText);
+  };
+
+  const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
   useEffect(() => {
@@ -77,6 +92,10 @@ function InputTodo({
           onBlur={() => setFocus(false)}
           onChange={handleChange}
           className={classesInput}
+          draggable={true}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnds}
+          onDrop={handleDragDrop}
           type="text"
           value={valueInput}
           initial={{ opacity: 0 }}

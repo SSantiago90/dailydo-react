@@ -15,7 +15,8 @@ function DayView({ date }: DayViewProps) {
     useContext(todosContext);
 
   const day = date.getDate() + "/" + String(Number(date.getMonth()) + 1);
-  const dayName = date.toLocaleString("en-US", { weekday: "long" });
+  let dayName = date.toLocaleString("default", { weekday: "long" });
+  dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
   const todos = getTodosForDay(date);
 
   const isToday = date.toLocaleDateString() === new Date().toLocaleDateString();
