@@ -19,7 +19,7 @@ function Header() {
       <div className="container mx-auto flex flex-wrap p-6 flex-col md:flex-row items-center justify-between mt-0 pt-0 lg:pt-2">
         <a className="flex md:order-first lg:order-none order-2 lg:w-1/5 title-font font-medium items-center text-gray-900 lg:items-center lg:justify-center mb-4 md:mb-0">
           <motion.h1
-            className="md:text-6xl text-4xl font-black text-rose-100 flex items-center"
+            className="md:text-6xl text-4xl font-black text-slate-100 flex items-center"
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{
@@ -42,41 +42,6 @@ function Header() {
         </div>
       </div>
     </motion.header>
-  );
-  return (
-    <>
-      <motion.header
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          duration: 1.2,
-        }}
-      >
-        <div className="mt-6 mb-10 flex-row ">
-          <div className="logo flex items-center  gap-2 justify-center">
-            <motion.h1
-              className="text-6xl font-black text-rose-100"
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{
-                duration: 1.2,
-              }}
-            >
-              daily
-              <span
-                className={`text-8xl pl-0 text-${themeColor}-500 opacity-70 _text-handwritten`}
-              >
-                Do
-              </span>
-            </motion.h1>
-          </div>
-          <NavMenu />
-        </div>
-        <div className="flex justify-center mt-1 mb-4">
-          <DatePickerContainer />
-        </div>
-      </motion.header>
-    </>
   );
 }
 
