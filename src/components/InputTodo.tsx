@@ -61,15 +61,19 @@ function InputTodo({
   };
 
   const handleDragStart = (evt: DragEvent) => {
+    console.log("start", value, id);
     evt.dataTransfer?.setData("text", value);
   };
 
   const handleDragEnds = () => {
+    console.log("ends", value, id);
     const newValue = localStorage.getItem("prevInput");
+    localStorage.removeItem("prevInput");
     onChange(newValue || "");
   };
 
   const handleDragDrop = (evt: React.DragEvent) => {
+    console.log("drop", value, id);
     const inputText = evt.dataTransfer.getData("text");
     localStorage.setItem("prevInput", valueInput);
     setValue("");

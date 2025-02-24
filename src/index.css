@@ -74,6 +74,19 @@ main {
   );
 }
 
+/* Change the white to any color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px rgb(255, 228, 187) inset !important;
+}
+
+/*Change text in autofill textbox*/
+input:-webkit-autofill {
+  -webkit-text-fill-color: #444444 !important;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #6c6c6c;

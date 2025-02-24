@@ -16,10 +16,10 @@ function Header() {
       }}
       className="text-gray-600 body-font"
     >
-      <div className="container mx-auto flex flex-wrap p-6 flex-col md:flex-row items-center justify-between mt-0 pt-0 lg:pt-2">
+      <div className="container mx-auto flex flex-wrap p-6 flex-col md:flex-row items-center justify-between mt-0 lg:py-0 pb-8 lg:pt-2">
         <a className="flex md:order-first lg:order-none order-2 lg:w-1/5 title-font font-medium items-center text-gray-900 lg:items-center lg:justify-center mb-4 md:mb-0">
           <motion.h1
-            className="md:text-6xl text-4xl font-black text-slate-100 flex items-center"
+            className="xl:text-6xl md:text-5xl text-4xl font-black text-slate-100 flex items-center"
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{

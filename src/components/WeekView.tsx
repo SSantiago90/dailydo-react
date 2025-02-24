@@ -1,3 +1,4 @@
+import { useTheme } from "../storage/ThemeContext";
 import DayView from "./DayView";
 import Loader from "./UI/Loader";
 import { AnimatePresence, motion } from "framer-motion";
@@ -10,6 +11,7 @@ type WeekViewProps = {
 
 function WeekView({ weekDays, fetching, back = false, errors }: WeekViewProps) {
   const animX = back ? -120 : 120;
+  const { themeColor } = useTheme();
 
   return (
     <section className="relative min-h-[40vh]">
@@ -20,13 +22,13 @@ function WeekView({ weekDays, fetching, back = false, errors }: WeekViewProps) {
       )}
       {errors ? (
         <div className="flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 items-center justify-center">
-          <div className="flex flex-col items-center justify-center gap-2">
+          <div className="flex flex-col items-center justify-center gap-10">
             <h1 className="text-4xl font-bold">
               Sorry! Something went wrong 😥
             </h1>
-            <p className="text-red-600">{errors.message}</p>
+            <p className="text-slate-500">{errors.message}</p>
             <button
-              className="text-slate-500"
+              className={`text-slate-300 hover:text-${themeColor}-500`}
               onClick={() => window.location.reload()}
             >
               Refresh
