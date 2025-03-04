@@ -17,6 +17,7 @@ import {
 import getWeekdays from "../util/createWeekdays";
 import normalizeDate from "../util/normalizeDate";
 import { useDebounce } from "@uidotdev/usehooks";
+import { SessionContext } from "./SessionContext";
 import newLogger from "../util/log";
 
 type TodosContextType = {
@@ -47,8 +48,10 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const [cachedDates, setCachedDates] = useState<Date[]>([]);
   const [errors, setErrors] = useState<Error | null>(null);
   const [updatingTodos, setUpdatingTodos] = useState<string[]>([]);
-  const debouncedTodos = useDebounce(todos, 1500);
-  const debouncedNotes = useDebounce(notes, 1500);
+  const debouncedTodos = useDebounce(todos, 500);
+  const debouncedNotes = useDebounce(notes, 500);
+
+  const { user } = useContext(SessionContext);
 
   const isCachedDate = (date: Date) =>
     cachedDates.some(
@@ -88,6 +91,8 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchData = async () => {
       // if todo-data is not cached, start fetching new data
+      if (!user) return;
+
       setFetching(true);
 
       // get all day-dates for this week's days
@@ -116,6 +121,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         const notesTodos = await getAllNotes();
         // add an empty "todo" for everyday
         const positions = [1, 2, 3];
+        console.log("---->", notesTodos);
         positions.forEach((position) => {
           notesTodos.push({
             date: new Date(),

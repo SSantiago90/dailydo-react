@@ -6,7 +6,7 @@ type WeekViewProps = {
   weekDays: Date[];
   fetching: boolean;
   back?: boolean;
-  errors: Error;
+  errors: Error | null;
 };
 
 function WeekView({ weekDays, fetching, back = false, errors }: WeekViewProps) {

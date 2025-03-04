@@ -5,12 +5,22 @@ import { SessionType } from "../types/Session.type";
 
 type LoginProps = {
   isOpen: boolean;
-  onClose: () => void;
+  onClose: null | (() => void);
   onConfirm: (data: SessionType) => void;
 };
 
-function LoginForm({ isOpen, onClose, onConfirm }: LoginProps) {
-  const [fetchingStatus, setFetchingStatus] = useState({
+type LoginState = {
+  fetching: boolean;
+  response: SessionType | null;
+  error: string | null;
+};
+
+export default function ModalLoginForm({
+  isOpen,
+  onClose,
+  onConfirm,
+}: LoginProps) {
+  const [fetchingStatus, setFetchingStatus] = useState<LoginState>({
     fetching: false,
     response: null,
     error: null,
@@ -34,7 +44,17 @@ function LoginForm({ isOpen, onClose, onConfirm }: LoginProps) {
       }),
     });
     request
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          setFetchingStatus({
+            fetching: false,
+            response: null,
+            error: response.statusText,
+          });
+          throw new Error(response.statusText);
+        }
+        return response.json();
+      })
       .then((data) => {
         setFetchingStatus({ fetching: false, response: data, error: null });
         onConfirm(data);
@@ -160,5 +180,3 @@ function LoginForm({ isOpen, onClose, onConfirm }: LoginProps) {
     </Modal>
   );
 }
-
-export default LoginForm;

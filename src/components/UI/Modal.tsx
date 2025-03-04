@@ -7,7 +7,7 @@ import HBar from "./HBar";
 
 type ModalPropTypes = {
   isOpen: boolean;
-  onClose: () => void;
+  onClose: () => void | null;
   children: React.ReactNode;
   colorClassName?: string;
   Header?: React.ReactNode;
@@ -81,13 +81,15 @@ export const Header = ({
       <div>
         <div className="flex flex-row gap-2 justify-between mb-2 px-1">
           <span className="text-sm font-light opacity-80">{children}</span>
-          <button onClick={onClose}>
-            <CircleX
-              className={`hover:text-${themeColor}-500`}
-              size={20}
-              strokeWidth={1.2}
-            />
-          </button>
+          {onClose && (
+            <button onClick={onClose}>
+              <CircleX
+                className={`hover:text-${themeColor}-500`}
+                size={20}
+                strokeWidth={1.2}
+              />
+            </button>
+          )}
         </div>
       </div>
       <HBar />
