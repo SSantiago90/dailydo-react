@@ -14,18 +14,16 @@ function WeekView({ weekDays, fetching, back = false, errors }: WeekViewProps) {
   const { themeColor } = useTheme();
 
   return (
-    <section className="relative min-h-[40vh]">
+    <section className="min-h-[40vh]">
       {fetching && (
-        <div className="flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 items-center justify-center">
+        <div className="flex absolute top-2/3 left-1/2 -translate-x-1/2 -translate-y-2/3 items-center justify-center">
           <Loader delay={100} />
         </div>
       )}
       {errors ? (
         <div className="flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 items-center justify-center">
           <div className="flex flex-col items-center justify-center gap-10">
-            <h1 className="text-4xl font-bold">
-              Sorry! Something went wrong 😥
-            </h1>
+            <h1 className="text-4xl font-bold">Oops! Algo salió mal 😥</h1>
             <p className="text-slate-500">{errors.message}</p>
             <button
               className={`text-slate-300 hover:text-${themeColor}-500`}
@@ -49,7 +47,9 @@ function WeekView({ weekDays, fetching, back = false, errors }: WeekViewProps) {
           >
             <div
               id="listcontainer"
-              className="flex flex-col xl:flex-row items-center xl:items-baseline gap-6 justify-center mx-auto my-2 p-8"
+              className={`flex flex-col xl:flex-row items-center xl:items-baseline gap-6 justify-center mx-auto my-2 p-8 ${
+                fetching ? "opacity-35" : "opacity-100"
+              }`}
             >
               {weekDays.length &&
                 weekDays.map((daylist: Date) => (

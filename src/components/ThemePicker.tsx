@@ -23,6 +23,7 @@ function ThemePicker() {
       placement: "-4px",
     },
   };
+
   return (
     <>
       <div className="flex flex-row gap-1 items-center">

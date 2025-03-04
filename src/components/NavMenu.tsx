@@ -9,10 +9,6 @@ import { useTheme } from "../storage/ThemeContext";
 import { CustomFlowbiteTheme, Popover } from "flowbite-react";
 import { User } from "lucide-react";
 
-/* 
-  TODO: 
-    - fix display for user icon
-*/
 function NavMenu() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isOpenLogout, setIsOpenLogout] = useState<boolean>(false);

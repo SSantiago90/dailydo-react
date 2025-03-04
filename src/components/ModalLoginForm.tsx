@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useTheme } from "../storage/ThemeContext";
 import Modal from "./UI/Modal";
 import { SessionType } from "../types/Session.type";
+import { Link } from "react-router-dom";
+import CircleIcon from "./UI/CircleIcon";
+import useToast from "./UI/Toast";
 
 type LoginProps = {
   isOpen: boolean;
@@ -27,6 +30,12 @@ export default function ModalLoginForm({
   });
 
   const { themeColor } = useTheme();
+  const { showToast, ToastPortal } = useToast();
+
+  const icons = [
+    { icon: "/google-icon.svg", provider: "Google" },
+    { icon: "/fb-icon.svg", provider: "Facebook" },
+  ];
 
   function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -65,118 +74,117 @@ export default function ModalLoginForm({
   }
 
   return (
-    <Modal
-      className="min-w-[360px] w-[560px]"
-      isOpen={isOpen}
-      onClose={onClose}
-    >
-      <Modal.Header onClose={onClose}>
-        <h2 className="font-bold">Iniciar sesión</h2>
-      </Modal.Header>
-      <form onSubmit={handleLogin} className="space-y-4">
-        <div>
-          <p>{fetchingStatus.error}</p>
-          <p>{fetchingStatus.response?.message}</p>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-slate-400"
-          >
-            Correo electrónico o nombre de usuario
-          </label>
-          <input
-            disabled={fetchingStatus.fetching}
-            type="text"
-            id="email"
-            name="email"
-            className={`mt-1 mx-auto block w-80 rounded-md border-slate-300 shadow-sm focus:border-${themeColor}-300 focus:ring focus:ring-${themeColor}-200 focus:ring-opacity-50 appearance-none bg-white`}
-            required
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-slate-400"
-          >
-            Contraseña
-          </label>
-          <input
-            disabled={fetchingStatus.fetching}
-            type="password"
-            id="password"
-            name="password"
-            className={`mt-1 mx-auto block w-80 rounded-md border-slate-300 shadow-sm focus:border-${themeColor}-300 focus:ring focus:ring-${themeColor}-200 focus:ring-opacity-50`}
-            required
-          />
-        </div>
-        <div className="flex items-center justify-between">
-          {/* 
-          <div className="flex items-center">
-            <input
-              id="remember"
-              name="remember"
-              type="checkbox"
-              className="h-4 w-4 rounded border-slate-300 text-${themeColor}-600 focus:border-${themeColor}-300 focus:ring-2"
-              />
+    <>
+      <Modal
+        className="min-w-[360px] w-[560px]"
+        isOpen={isOpen}
+        onClose={onClose}
+      >
+        <Modal.Header onClose={onClose}>
+          <h2 className="font-bold">Iniciar sesión</h2>
+        </Modal.Header>
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <p>{fetchingStatus.error}</p>
+            <p>{fetchingStatus.response?.message}</p>
             <label
-              htmlFor="remember"
-              className="ml-2 block text-sm text-slate-500 hover:text-slate-300"
+              htmlFor="email"
+              className="block text-sm font-medium text-slate-400"
             >
-              Recordarme
-            </label> 
+              Correo electrónico o nombre de usuario
+            </label>
+            <input
+              disabled={fetchingStatus.fetching}
+              type="text"
+              id="email"
+              name="email"
+              className={`mt-1 mx-auto block w-80 rounded-md border-slate-300 shadow-sm focus:border-${themeColor}-300 focus:ring focus:ring-${themeColor}-200 focus:ring-opacity-50 appearance-none bg-white`}
+              required
+            />
           </div>
-            */}
-        </div>
-        <div className="flex flex-col mt-2 items-center justify-between gap-2">
-          <button
-            disabled={fetchingStatus.fetching}
-            type="submit"
-            className={`w-80 flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-slate-500 hover:bg-${themeColor}-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-${themeColor}-500`}
-          >
-            Iniciar sesión
-          </button>
-        </div>
-      </form>
-      <Modal.Footer>
-        <div className="flex flex-col">
-          <p className="mt-2 text-sm text-center text-slate-500">
-            O inicia sesión con
-          </p>
-          <div className="flex justify-center mt-4 space-x-4">
-            <button
-              className={`flex items-center justify-center w-10 h-10 rounded-full bg-${themeColor}-500 hover:bg-${themeColor}-600 text-white p-2`}
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-slate-400"
             >
-              F
-            </button>
-            <button
-              className={`flex items-center justify-center w-10 h-10 rounded-full bg-${themeColor}-500 hover:bg-${themeColor}-600 text-white p-2`}
-            >
-              G
-            </button>
-            <button
-              className={`flex items-center justify-center w-10 h-10 rounded-full bg-${themeColor}-500 hover:bg-${themeColor}-600 text-white p-2`}
-            >
-              I
-            </button>
+              Contraseña
+            </label>
+            <input
+              disabled={fetchingStatus.fetching}
+              type="password"
+              id="password"
+              name="password"
+              className={`mt-1 mx-auto block w-80 rounded-md border-slate-300 shadow-sm focus:border-${themeColor}-300 focus:ring focus:ring-${themeColor}-200 focus:ring-opacity-50`}
+              required
+            />
           </div>
-          <div className="flex flex-col mt-3 justify-center gap-2">
-            <p className="text-sm text-slate-500">
-              ¿No tienes cuenta?
-              <a
-                href="#"
-                className={`text-sm text-slate-500 hover:text-${themeColor}-500`}
+          <div className="flex flex-col mt-2 items-center justify-between gap-2">
+            <div className="flex items-center justify-between">
+              {/* <div className="flex items-center mx-auto">
+              <input
+                id="remember"
+                name="remember"
+                type="checkbox"
+                className={`h-4 w-4 rounded border-slate-300 text-${themeColor}-500 focus:border-${themeColor}-300 focus:ring-2`}
+              />
+              <label
+                htmlFor="remember"
+                className="ml-2 block text-sm text-slate-500 hover:text-slate-300"
               >
-                <strong>Regístrate</strong>
-              </a>
-            </p>
-            <a
-              href="#"
-              className={`text-sm text-slate-500  hover:text-${themeColor}-500`}
+                Recordarme
+              </label>
+            </div> */}
+            </div>
+            <button
+              disabled={fetchingStatus.fetching}
+              type="submit"
+              className={`w-80 flex justify-center mt-2 py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white hover:bg-${themeColor}-700 bg-${themeColor}-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-${themeColor}-500`}
             >
-              ¿Olvidaste tu contraseña?
-            </a>
+              Iniciar sesión
+            </button>
           </div>
-        </div>
-      </Modal.Footer>
-    </Modal>
+        </form>
+        <Modal.Footer>
+          <div className="flex flex-col">
+            <p className="mt-2 text-sm text-center text-slate-500">
+              O inicia sesión con
+            </p>
+
+            <div className="flex justify-center mt-4 space-x-4">
+              {icons.map((icon) => (
+                <button
+                  onClick={() => {
+                    showToast(
+                      "Lo sentimos: aún estamos trabajando en esta funcionalidad.",
+                      { type: "error" }
+                    );
+                  }}
+                  key={icon.provider}
+                >
+                  <CircleIcon
+                    color="white"
+                    title={icon.provider}
+                    icon={icon.icon}
+                  />
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-col mt-3 justify-center gap-2">
+              <p className="text-sm text-slate-500">
+                ¿No tienes cuenta?
+                <br />
+                <Link
+                  className={`text-sm text-slate-500 hover:text-${themeColor}-500`}
+                  to="/register"
+                >
+                  <strong>Regístrate</strong>
+                </Link>
+              </p>
+            </div>
+          </div>
+        </Modal.Footer>
+      </Modal>
+      <ToastPortal />
+    </>
   );
 }
