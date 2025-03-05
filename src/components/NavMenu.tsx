@@ -70,7 +70,7 @@ function NavMenu() {
             >
               <button
                 className="flex flex-row gap-1 items-center justify-center"
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={handleConfirmLogout}
               >
                 <NavItem bold>
                   {user?.email.split("@")[0]}

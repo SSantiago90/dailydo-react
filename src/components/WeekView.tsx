@@ -14,9 +14,9 @@ function WeekView({ weekDays, fetching, back = false, errors }: WeekViewProps) {
   const { themeColor } = useTheme();
 
   return (
-    <section className="min-h-[40vh]">
+    <section className="min-h-[40vh] relative">
       {fetching && (
-        <div className="flex absolute top-2/3 left-1/2 -translate-x-1/2 -translate-y-2/3 items-center justify-center">
+        <div className="flex absolute left-1/2 -translate-x-1/2 top-5 items-center justify-center min-h-[40vh]">
           <Loader delay={100} />
         </div>
       )}
@@ -29,7 +29,7 @@ function WeekView({ weekDays, fetching, back = false, errors }: WeekViewProps) {
               className={`text-slate-300 hover:text-${themeColor}-500`}
               onClick={() => window.location.reload()}
             >
-              Refresh
+              Actualizar
             </button>
           </div>
         </div>

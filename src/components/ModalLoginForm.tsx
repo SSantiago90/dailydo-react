@@ -15,7 +15,7 @@ type LoginProps = {
 type LoginState = {
   fetching: boolean;
   response: SessionType | null;
-  error: string | null;
+  error: { error: string; message: string } | null;
 };
 
 export default function ModalLoginForm({
@@ -39,6 +39,7 @@ export default function ModalLoginForm({
 
   function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    showToast("Iniciando sesión...", { type: "info" });
     setFetchingStatus({ fetching: true, response: null, error: null });
     const loginEndpoint = "http://localhost:3000/auth/login";
 
@@ -54,13 +55,16 @@ export default function ModalLoginForm({
     });
     request
       .then((response) => {
+        console.log(response);
         if (!response.ok) {
-          setFetchingStatus({
-            fetching: false,
-            response: null,
-            error: response.statusText,
+          response.json().then((json) => {
+            setFetchingStatus({
+              fetching: false,
+              response: null,
+              error: { error: json.error, message: json.message },
+            });
+            showToast(json.message, { type: "error" });
           });
-          throw new Error(response.statusText);
         }
         return response.json();
       })
@@ -85,8 +89,12 @@ export default function ModalLoginForm({
         </Modal.Header>
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <p>{fetchingStatus.error}</p>
-            <p>{fetchingStatus.response?.message}</p>
+            {fetchingStatus.error && (
+              <>
+                <p>Error al iniciar sesión</p>
+                <p className="text-sm">{fetchingStatus.error?.message}</p>
+              </>
+            )}
             <label
               htmlFor="email"
               className="block text-sm font-medium text-slate-400"

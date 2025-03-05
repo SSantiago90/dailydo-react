@@ -26,8 +26,9 @@ function InputTodo({
   controls = true,
 }: InputTodoProps) {
   const [valueInput, setValue] = useState<string>(value);
-  const [focus, setFocus] = useState<boolean>(false);
+  const [isFocus, setFocus] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isHover, setIsHover] = useState<boolean>(false);
 
   const { themeColor } = useTheme();
 
@@ -47,8 +48,8 @@ function InputTodo({
   const classesHr = classNames(
     "border-t-2 mb-1 transition transform duration-200 ease-in-out ",
     {
-      "border-slate-600 border-opacity-30": !focus,
-      [`border-${themeColor}-500 border-opacity-70`]: focus,
+      "border-slate-600 border-opacity-30": !isFocus,
+      [`border-${themeColor}-500 border-opacity-70`]: isFocus,
     }
   );
 
@@ -86,7 +87,11 @@ function InputTodo({
 
   return (
     <>
-      <li className="flex-1 w-full flex items-center">
+      <li
+        onMouseEnter={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
+        className="flex-1 w-full flex items-center"
+      >
         <motion.input
           autoFocus={!controls}
           onFocus={() => setFocus(true)}
@@ -103,7 +108,7 @@ function InputTodo({
           animate={{ opacity: 1 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
         />
-        {value !== "" && controls && (
+        {value !== "" && (isFocus || isHover) && controls && (
           <>
             <Pencil
               strokeWidth={1.7}

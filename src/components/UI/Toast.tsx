@@ -52,17 +52,5 @@ const useToast = () => {
 
   return { showToast, ToastPortal };
 };
-/**
- * Use this hook to show toast messages in your app.
- *
- * Example of usage:
- *
- * const { showToast, ToastPortal } = useToast();
- *
- * showToast('Something went wrong', { type: 'error' });
- *
- * // Somewhere in your app
- * <ToastPortal />
- */
 
 export default useToast;
