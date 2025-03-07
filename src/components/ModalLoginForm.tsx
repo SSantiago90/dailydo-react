@@ -5,6 +5,7 @@ import { SessionType } from "../types/Session.type";
 import { Link } from "react-router-dom";
 import CircleIcon from "./UI/CircleIcon";
 import useToast from "./UI/Toast";
+import { loginUser } from "../services/todosApi";
 
 type LoginProps = {
   isOpen: boolean;
@@ -41,9 +42,13 @@ export default function ModalLoginForm({
     event.preventDefault();
     showToast("Iniciando sesión...", { type: "info" });
     setFetchingStatus({ fetching: true, response: null, error: null });
-    const loginEndpoint = "http://localhost:3000/auth/login";
 
-    const request = fetch(loginEndpoint, {
+    const loginData = {
+      email: event.currentTarget.email.value,
+      password: event.currentTarget.password.value,
+    };
+    const request = loginUser(loginData);
+    /*  const request = fetch(loginEndpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -52,7 +57,7 @@ export default function ModalLoginForm({
         email: event.currentTarget.email.value,
         password: event.currentTarget.password.value,
       }),
-    });
+    }); */
     request
       .then((response) => {
         console.log(response);
@@ -106,7 +111,7 @@ export default function ModalLoginForm({
               type="text"
               id="email"
               name="email"
-              className={`mt-1 mx-auto block w-80 rounded-md border-slate-300 shadow-sm focus:border-${themeColor}-300 focus:ring focus:ring-${themeColor}-200 focus:ring-opacity-50 appearance-none bg-white`}
+              className={`mt-1 mx-auto block w-80 rounded-md border-slate-300 shadow-sm focus:border-${themeColor}-300 focus:ring focus:ring-${themeColor}-200 focus:ring-opacity-50 appearance-none text-slate-800 bg-white`}
               required
             />
           </div>
@@ -122,7 +127,7 @@ export default function ModalLoginForm({
               type="password"
               id="password"
               name="password"
-              className={`mt-1 mx-auto block w-80 rounded-md border-slate-300 shadow-sm focus:border-${themeColor}-300 focus:ring focus:ring-${themeColor}-200 focus:ring-opacity-50`}
+              className={`mt-1 mx-auto block w-80 rounded-md border-slate-300 shadow-sm focus:border-${themeColor}-300 focus:ring focus:ring-${themeColor}-200  text-slate-800 focus:ring-opacity-50`}
               required
             />
           </div>

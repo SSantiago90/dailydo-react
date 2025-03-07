@@ -1,6 +1,8 @@
+/*************  ✨ Codeium Command 🌟  *************/
 import { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import classNames from "classnames";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface UseToastOptions {
   type?: "success" | "error" | "info";
@@ -20,13 +22,28 @@ const Toast: React.FC<{ message: string; type: string }> = ({
     }
   );
 
-  return <div className={toastClass}>{message}</div>;
+  return (
+    <AnimatePresence>
+      <motion.div
+        key={message}
+        className={toastClass}
+        initial={{ bottom: "-100px" }}
+        animate={{ bottom: "0px" }}
+        exit={{ bottom: "-100px" }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+      >
+        {message}
+      </motion.div>
+    </AnimatePresence>
+  );
 };
 
 const useToast = () => {
-  const [toast, setToast] = useState<{ message: string; type: string } | null>(
-    null
-  );
+  const [toast, setToast] = useState<{
+    message: string;
+    type: string;
+    duration?: number;
+  } | null>(null);
 
   useEffect(() => {
     if (toast) {

@@ -65,9 +65,6 @@ export default function TodoDetails(TodoDetailsProps: TodoDetailsProps) {
             <p className={`text-xs text-right text-${themeColor}-500`}>
               Created on: {new Date(todo.date).toLocaleDateString()}
             </p>
-            <p className={`text-xs text-right text-slate-400-500 opacity-20`}>
-              Todo ID: {todo.id}
-            </p>
           </div>
           <HBar />
           <div className="flex flex-row gap-5 justify-around">

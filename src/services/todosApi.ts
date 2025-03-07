@@ -1,6 +1,11 @@
+import { TodosType } from "../types/Todos.types";
 
-import { TodosType } from "../types/Todos.types.ts";
-import newLogger  from "../util/log.ts";
+import newLogger  from "../util/log";
+
+const ENDPOINT = import.meta.env.MODE
+  ? import.meta.env.VITE_API_ENDPOINT_PROD
+  : import.meta.env.VITE_API_ENDPOINT_DEV
+
 const log = newLogger("API-Todo Service");
 
 const AUTH_CONFIG = {
@@ -10,7 +15,7 @@ const AUTH_CONFIG = {
 
 export async function validateJWT(token: string) : Promise<boolean> {
   const request = await fetch(
-    "http://localhost:3000/auth/validate", 
+    `${ENDPOINT}/auth/validate`, 
     {
     method: "POST",
     headers: {
@@ -21,16 +26,39 @@ export async function validateJWT(token: string) : Promise<boolean> {
   return request.ok
 }
 
-/* async function getTodosForWeek_old(date: Date): Promise<TodosType[]>  { 
-  const isoDate = new Date(date).toISOString();
-  log(`FETCHING ALL TODOS FOR WEEK ${isoDate}`);
-  const response = await fetch(`http://localhost:3000/todos/week/${isoDate}`);
-  const data = await response.json(); 
-  return data;
+export async function registerUser( userData: { email: string, password: string }) : Promise<Response> {
+  const request = await fetch(
+    `${ENDPOINT}/auth/register`, 
+    {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(userData),
+    }
+  )  
+  return request
 }
- */
+
+
+
+export async function loginUser( userData: { email: string, password: string }) : Promise<Response> {
+  const request = await fetch(
+    `${ENDPOINT}/auth/login`, 
+    {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(userData),
+    }
+  )  
+  return request
+}
+
+
 async function getAllTodos(token: string): Promise<TodosType[]>  { 
-  const response = await fetch(`http://localhost:3000/todos/`, {
+  const response = await fetch(`${ENDPOINT}/todos/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -46,11 +74,10 @@ async function getAllTodos(token: string): Promise<TodosType[]>  {
 async function getTodosForWeek(date: Date) : Promise<TodosType[]>  {
   if (!date) date = new Date();
 
-  console.log(date)
   const isoDate = new Date(date).toISOString();
 
   log("FETCHING ALL TODOS FOR WEEK", date);
-  const response = await fetch(`http://localhost:3000/todos/week/${isoDate}`, {
+  const response = await fetch(`${ENDPOINT}/todos/week/${isoDate}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -64,7 +91,7 @@ async function getTodosForWeek(date: Date) : Promise<TodosType[]>  {
 
 async function getAllNotes() : Promise<TodosType[]>  {
   log("FETCHING ALL NOTES");
-  const response = await fetch(`http://localhost:3000/todos/notes`, {
+  const response = await fetch(`${ENDPOINT}/todos/notes`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -82,7 +109,7 @@ async function updateTodo(todo: TodosType) : Promise<{ status: string, message: 
     date: todo.date,
     isNote: todo.isNote
    }
-  const response = await fetch(`http://localhost:3000/todos/${todo.id}`, {
+  const response = await fetch(`${ENDPOINT}/todos/${todo.id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -104,7 +131,7 @@ async function createTodo(todo: TodosType) : Promise<TodosType>  {
     isNote: todo.isNote
   }
 
-  const response = await fetch(`http://localhost:3000/todos`, {
+  const response = await fetch(`${ENDPOINT}/todos`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -118,7 +145,7 @@ async function createTodo(todo: TodosType) : Promise<TodosType>  {
 }
 
 async function deleteTodo(id: string) : Promise<{ status: string, message: string}>  {
-  const response = await fetch(`http://localhost:3000/todos/${id}`, {
+  const response = await fetch(`${ENDPOINT}/todos/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -130,7 +157,7 @@ async function deleteTodo(id: string) : Promise<{ status: string, message: strin
 }
 
 async function resetDB() : Promise<Response>  {
-  const res = await fetch(`http://localhost:3000/todos/resetDB`, {
+  const res = await fetch(`${ENDPOINT}/todos/resetDB`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -141,3 +168,4 @@ async function resetDB() : Promise<Response>  {
 }
 
 export {getTodosForWeek, getAllNotes, updateTodo, createTodo, deleteTodo, getAllTodos, resetDB}
+
