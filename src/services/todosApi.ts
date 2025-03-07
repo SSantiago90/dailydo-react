@@ -6,6 +6,8 @@ const ENDPOINT = import.meta.env.MODE
   ? import.meta.env.VITE_API_ENDPOINT_PROD
   : import.meta.env.VITE_API_ENDPOINT_DEV
 
+  console.log("ENDPOINT", ENDPOINT, import.meta.env.MODE, import.meta.env.VITE_API_ENDPOINT_DEV)
+
 const log = newLogger("API-Todo Service");
 
 const AUTH_CONFIG = {
