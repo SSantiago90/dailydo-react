@@ -1,50 +1,62 @@
-# React + TypeScript + Vite
+# Daily Do
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Project Description
 
-Currently, two official plugins are available:
+Daily Do is a React-based web application designed to help users manage their daily tasks and to-dos efficiently. Built with TypeScript and utilizing Vite for rapid development, this application provides a clean and intuitive interface for tracking and organizing daily activities.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- User-friendly interface for creating and managing daily tasks
+- Task categorization and prioritization
+- Reminders and due date notifications
+- Progress tracking and completion statistics
+- Dark mode support for comfortable usage
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Technologies Used
 
-- Configure the top-level `parserOptions` property like this:
+- React: For building the user interface
+- TypeScript: For static typing and improved developer experience
+- Vite: As the build tool for fast development and hot module replacement
+- Tailwind CSS: For utility-first styling
+- ESLint: For code quality and consistency checks
+- SWC: For fast compilation during development
+- React Router DOM: For client-side routing
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Getting Started
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+1. Clone the repository:
+   git clone https://github.com/yourusername/daily-do.git
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+2. Navigate to the project directory:
+   cd daily-do
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+3. Install dependencies:
+   npm install
+
+4. Start the development server:
+   npm run dev
+
+## Available Scripts
+
+- `npm run dev`: Starts the development server
+- `npm run build`: Builds the application for production
+- `npm run preview`: Previews the built application locally
+- `npm run lint`: Runs ESLint to check for code quality issues
+
+## Environment Variables
+
+This project uses environment variables for configuration. Create a `.env` file in the root directory to set up your environment variables. Refer to the `.env.example` file for available variables.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [Your Name]
+- [Any other contributors]
+- [Inspiration from various open-source projects]
