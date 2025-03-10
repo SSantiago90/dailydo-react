@@ -5,15 +5,10 @@ import Modal from "../components/UI/Modal";
 import Button from "../components/UI/Button.tsx";
 import { resetDB } from "../services/todosApi.ts";
 
-function Layout({
-  children,
-  mode,
-}: {
-  children: React.ReactNode;
-  mode: string;
-}) {
+function Layout({ children }: { children: React.ReactNode; mode: string }) {
   const [refetch, setRefetch] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+  const DEV_ENV = import.meta.env.MODE === "development";
 
   function handleReset() {
     setRefetch(false);
@@ -33,7 +28,7 @@ function Layout({
     else console.error(res);
   }
 
-  if (mode === "dev")
+  if (DEV_ENV)
     return (
       <>
         {refetch && (

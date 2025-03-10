@@ -2,11 +2,9 @@ import { TodosType } from "../types/Todos.types";
 
 import newLogger  from "../util/log";
 
-const ENDPOINT = import.meta.env.MODE
-  ? import.meta.env.VITE_API_ENDPOINT_PROD
-  : import.meta.env.VITE_API_ENDPOINT_DEV
-
-  console.log("ENDPOINT", ENDPOINT, import.meta.env.MODE, import.meta.env.VITE_API_ENDPOINT_DEV)
+const ENDPOINT = import.meta.env.MODE === "development"
+  ? import.meta.env.VITE_API_ENDPOINT_DEV
+  : import.meta.env.VITE_API_ENDPOINT_PROD
 
 const log = newLogger("API-Todo Service");
 

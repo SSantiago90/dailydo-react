@@ -1,5 +1,6 @@
-import { ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useEffect, useState } from "react";
 import { SessionType } from "../types/Session.type";
+import { validateJWT } from "../services/todosApi";
 
 type SessionContextType = {
   user: SessionType | null;
@@ -18,11 +19,24 @@ export const SessionContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const jwt = localStorage.getItem("jwt");
+  const [user, setUser] = useState<SessionType | null>(null);
 
-  const [user, setUser] = useState<SessionType | null>(
-    jwt ? { token: jwt, email: localStorage.getItem("jwt-email") } : null
-  );
+  useEffect(() => {
+    const jwt = localStorage.getItem("jwt") || "";
+    const validateToken = async () => {
+      const isValid = await validateJWT(jwt);
+      if (!isValid) {
+        setUser(null);
+        localStorage.removeItem("jwt");
+        localStorage.removeItem("jwt-email");
+      } else {
+        const email = localStorage.getItem("jwt-email") || "";
+        setUser({ token: jwt, email: email });
+      }
+    };
+    validateToken();
+  }, []);
+
   const sessionLogin = (user: SessionType | null) => {
     if (user && user.token) {
       localStorage.setItem("jwt", user.token);
