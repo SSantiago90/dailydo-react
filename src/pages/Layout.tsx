@@ -5,7 +5,7 @@ import Modal from "../components/UI/Modal";
 import Button from "../components/UI/Button.tsx";
 import { resetDB } from "../services/todosApi.ts";
 
-function Layout({ children }: { children: React.ReactNode; mode: string }) {
+function Layout({ children }: { children: React.ReactNode }) {
   const [refetch, setRefetch] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const DEV_ENV = import.meta.env.MODE === "development";
@@ -39,10 +39,7 @@ function Layout({ children }: { children: React.ReactNode; mode: string }) {
                   <div className="background_layer"></div>
                 </div>
                 <main>
-                  <div
-                    style={{ display: "" }}
-                    className="flex gap-4 items-center justify-center"
-                  >
+                  <div className="flex gap-4 items-center justify-center z-50 sticky">
                     <button
                       className="hover:opacity-100 opacity-15"
                       onClick={handleReset}
@@ -56,6 +53,7 @@ function Layout({ children }: { children: React.ReactNode; mode: string }) {
                       Reset Database
                     </button>
                   </div>
+
                   <Modal isOpen={isOpen} onClose={() => setIsOpen(!isOpen)}>
                     <Modal.Header>Reset Database</Modal.Header>
                     <p>¿Seguro que quieres borrar la base de datos?</p>

@@ -15,7 +15,7 @@ export default function App() {
     <SessionContextProvider>
       <BrowserRouter>
         <ThemeProvider>
-          <Layout mode="dev">
+          <Layout>
             <Routes>
               <Route
                 path="/"

@@ -79,23 +79,10 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px rgb(212, 245, 159) inset !important;
+  -webkit-box-shadow: 0 0 0 0px rgba(0, 0, 0, 0) inset !important;
 }
 
 /*Change text in autofill textbox*/
 input:-webkit-autofill {
   -webkit-text-fill-color: #444444 !important;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #6c6c6c;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }

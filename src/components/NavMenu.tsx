@@ -54,10 +54,6 @@ function NavMenu() {
           <NavItem onAction={() => setIsOpen(true)}>Login</NavItem>
         ) : (
           <>
-            {/*  <NavItem>{user?.email.split("@")[0]}</NavItem>
-            <NavItem bold onAction={handleConfirmLogout}>
-              Logout
-            </NavItem> */}
             <Popover
               theme={customPopover}
               trigger="hover"

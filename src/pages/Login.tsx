@@ -3,6 +3,7 @@ import LoginForm from "../components/ModalLoginForm";
 import { SessionContext } from "../storage/SessionContext";
 import { SessionType } from "../types/Session.type";
 import { Navigate, useNavigate } from "react-router-dom";
+import Logo from "../components/Logo";
 
 export default function Login() {
   const { sessionLogin, isLoggedIn } = useContext(SessionContext);
@@ -17,6 +18,9 @@ export default function Login() {
 
   return (
     <div>
+      <div className="z-50 mx-auto sticky flex align-center text-center">
+        <Logo />
+      </div>
       <LoginForm onConfirm={handleLogin} isOpen={true} onClose={null} />
     </div>
   );

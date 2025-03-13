@@ -2,9 +2,9 @@ import { TodosType } from "../types/Todos.types";
 
 import newLogger  from "../util/log";
 
-const ENDPOINT = import.meta.env.MODE === "development"
-  ? import.meta.env.VITE_API_ENDPOINT_DEV
-  : import.meta.env.VITE_API_ENDPOINT_PROD
+const ENDPOINT = import.meta.env.MODE !== "development"
+  ? import.meta.env.VITE_API_ENDPOINT_PROD
+  : import.meta.env.VITE_API_ENDPOINT_DEV
 
 const log = newLogger("API-Todo Service");
 
@@ -13,8 +13,31 @@ const AUTH_CONFIG = {
   getJWT: () => localStorage.getItem("jwt"),
 } 
 
+const TIMEOUT = 10000;
+
+async function fetchWithTimeout(url : string, options : RequestInit) {
+  const controller = new AbortController();
+  const signal = controller.signal;
+
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
+
+  return fetch(url, { ...options, signal })
+      .then(response => {
+          clearTimeout(timeoutId); 
+          return response;
+      })
+      .catch(error => {
+          if (error.name === "AbortError") {
+              throw new Error("Request timed out");
+          }
+          throw error;
+      });
+}
+
+
+
 export async function validateJWT(token: string) : Promise<boolean> {
-  const request = await fetch(
+  const request = await fetchWithTimeout(
     `${ENDPOINT}/auth/validate`, 
     {
     method: "POST",
@@ -27,14 +50,14 @@ export async function validateJWT(token: string) : Promise<boolean> {
 }
 
 export async function registerUser( userData: { email: string, password: string }) : Promise<Response> {
-  const request = await fetch(
+  const request = await fetchWithTimeout(
     `${ENDPOINT}/auth/register`, 
     {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(userData),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
     }
   )  
   return request
@@ -43,7 +66,7 @@ export async function registerUser( userData: { email: string, password: string 
 
 
 export async function loginUser( userData: { email: string, password: string }) : Promise<Response> {
-  const request = await fetch(
+  const request = await fetchWithTimeout(
     `${ENDPOINT}/auth/login`, 
     {
     method: "POST",
@@ -58,7 +81,7 @@ export async function loginUser( userData: { email: string, password: string }) 
 
 
 async function getAllTodos(token: string): Promise<TodosType[]>  { 
-  const response = await fetch(`${ENDPOINT}/todos/`, {
+  const response = await fetchWithTimeout(`${ENDPOINT}/todos/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -67,7 +90,6 @@ async function getAllTodos(token: string): Promise<TodosType[]>  {
   });
 
   const data = await response.json(); 
-  console.log(data);
   return data;
 }
 
@@ -77,7 +99,7 @@ async function getTodosForWeek(date: Date) : Promise<TodosType[]>  {
   const isoDate = new Date(date).toISOString();
 
   log("FETCHING ALL TODOS FOR WEEK", date);
-  const response = await fetch(`${ENDPOINT}/todos/week/${isoDate}`, {
+  const response = await fetchWithTimeout(`${ENDPOINT}/todos/week/${isoDate}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -91,7 +113,7 @@ async function getTodosForWeek(date: Date) : Promise<TodosType[]>  {
 
 async function getAllNotes() : Promise<TodosType[]>  {
   log("FETCHING ALL NOTES");
-  const response = await fetch(`${ENDPOINT}/todos/notes`, {
+  const response = await fetchWithTimeout(`${ENDPOINT}/todos/notes`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -109,7 +131,7 @@ async function updateTodo(todo: TodosType) : Promise<{ status: string, message: 
     date: todo.date,
     isNote: todo.isNote
    }
-  const response = await fetch(`${ENDPOINT}/todos/${todo.id}`, {
+  const response = await fetchWithTimeout(`${ENDPOINT}/todos/${todo.id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -131,7 +153,7 @@ async function createTodo(todo: TodosType) : Promise<TodosType>  {
     isNote: todo.isNote
   }
 
-  const response = await fetch(`${ENDPOINT}/todos`, {
+  const response = await fetchWithTimeout(`${ENDPOINT}/todos`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -145,7 +167,7 @@ async function createTodo(todo: TodosType) : Promise<TodosType>  {
 }
 
 async function deleteTodo(id: string) : Promise<{ status: string, message: string}>  {
-  const response = await fetch(`${ENDPOINT}/todos/${id}`, {
+  const response = await fetchWithTimeout(`${ENDPOINT}/todos/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -157,7 +179,7 @@ async function deleteTodo(id: string) : Promise<{ status: string, message: strin
 }
 
 async function resetDB() : Promise<Response>  {
-  const res = await fetch(`${ENDPOINT}/todos/resetDB`, {
+  const res = await fetchWithTimeout(`${ENDPOINT}/todos/resetDB`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

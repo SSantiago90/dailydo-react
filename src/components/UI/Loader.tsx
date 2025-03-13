@@ -3,7 +3,15 @@ import { useTheme } from "../../storage/ThemeContext";
 import { motion } from "motion/react";
 import { useState } from "react";
 
-function Loader({ className, delay }: { className?: string; delay: number }) {
+function Loader({
+  className,
+  delay = 0,
+  size = 96,
+}: {
+  className?: string;
+  delay?: number;
+  size?: number;
+}) {
   const { themeColor } = useTheme();
   const [loading, setLoading] = useState(true);
 
@@ -20,7 +28,7 @@ function Loader({ className, delay }: { className?: string; delay: number }) {
 
   return (
     <motion.div
-      className={`flex h-full items-center justify-center ${className}`}
+      className={`flex h-full items-center justify-center`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0.4 }}
@@ -42,9 +50,9 @@ function Loader({ className, delay }: { className?: string; delay: number }) {
         }}
       >
         <LoaderCircle
-          size={96}
+          size={size}
           strokeWidth={2}
-          className={`animate-spin text-${themeColor}-500 flex items-center justify-center min-h-parent`}
+          className={`animate-spin text-${themeColor}-500 flex items-center justify-center min-h-parent ${className}`}
         />
       </motion.div>
     </motion.div>
