@@ -21,7 +21,6 @@ type RegState = {
 
 function parseErrorsFromResponse(json: any, type: string) {
   if (typeof json.message === "string") {
-    console.log(json.message);
     return json.message.includes(type);
   } else {
     return json.message?.map((error: string) => error.includes(type))[0];
@@ -78,7 +77,6 @@ export default function RegisterModalForm() {
         const errorEmail = parseErrorsFromResponse(json, "email");
         const errorPass = parseErrorsFromResponse(json, "password");
 
-        console.log("err email/pass", errorEmail, errorPass);
         setFetchingStatus({
           fetching: false,
           response: null,

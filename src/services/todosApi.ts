@@ -107,7 +107,6 @@ async function getTodosForWeek(date: Date) : Promise<TodosType[]>  {
     },
   });
   const data = await response.json();
-  console.log("-->", data);
   return data;
 }
 
@@ -145,8 +144,7 @@ async function updateTodo(todo: TodosType) : Promise<{ status: string, message: 
 }
 
 async function createTodo(todo: TodosType) : Promise<TodosType>  {
-  console.log("POST", todo)
-  const todoDTO = {
+   const todoDTO = {
     date: todo.date,
     done: todo.done,
     task: todo.task,
