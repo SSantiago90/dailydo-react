@@ -83,16 +83,14 @@ function Layout({ children }: { children: React.ReactNode }) {
     );
 
   return (
-    <main>
-      <SessionContextProvider>
-        <ThemeProvider>
-          <div className="background">
-            <div className="background_layer"></div>
-          </div>
-          {children}
-        </ThemeProvider>
-      </SessionContextProvider>
-    </main>
+    <SessionContextProvider>
+      <ThemeProvider>
+        <div className="background">
+          <div className="background_layer"></div>
+        </div>
+        {children}
+      </ThemeProvider>
+    </SessionContextProvider>
   );
 }
 

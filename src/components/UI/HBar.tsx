@@ -13,6 +13,7 @@ function HBar({
 }) {
   const { themeColor } = useTheme();
   const classes = classNames(
+    "z-10 pt-1 pb-1",
     [!white ? `border-${themeColor}-500` : `border-slate-400`],
     { "opacity-90 border-t-3": bold },
     { "opacity-30 border-t-1": !bold },

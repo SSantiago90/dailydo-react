@@ -5,7 +5,7 @@ export default function Register() {
   return (
     <div className="relative">
       <div className="z-50 mx-auto sticky flex align-center text-center">
-        <Logo />
+        <Logo still />
       </div>
 
       <RegisterModalForm />

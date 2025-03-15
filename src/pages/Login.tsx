@@ -19,7 +19,7 @@ export default function Login() {
   return (
     <div>
       <div className="z-50 mx-auto sticky flex align-center text-center">
-        <Logo />
+        <Logo still />
       </div>
       <LoginForm onConfirm={handleLogin} isOpen={true} onClose={null} />
     </div>
